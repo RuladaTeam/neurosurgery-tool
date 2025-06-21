@@ -25,6 +25,7 @@ public static class STLReader
         Debug.Log($"Triangles Count: {trianglesCount}");
 
         var vertices = new List<Vector3>();
+        var colors = new List<Color>();
         var triangles = new List<int>();
         var normals = new List<Vector3>();
         var triangleIndex = 0;
@@ -43,6 +44,10 @@ public static class STLReader
             vertices.Add(vertex2);
             vertices.Add(vertex3);
 
+            colors.Add(new Color(1, 0, 0));
+            colors.Add(new Color(1, 0, 0));
+            colors.Add(new Color(1, 0, 0));
+
             normals.Add(normal);
             normals.Add(normal);
             normals.Add(normal);
@@ -59,10 +64,11 @@ public static class STLReader
                 continue;
             }
 
-            AddMesh(vertices, triangles, normals);
+            AddMesh(vertices, colors, triangles, normals);
 
             normals.Clear();
             vertices.Clear();
+            colors.Clear();
             triangles.Clear();
             triangleIndex = 0;
         }
@@ -70,7 +76,7 @@ public static class STLReader
         // Add any remaining vertices and triangles
         if (vertices.Count > 0)
         {
-            AddMesh(vertices, triangles, normals);
+            AddMesh(vertices, colors, triangles, normals);
         }
 
         return Meshes;
@@ -81,12 +87,13 @@ public static class STLReader
     /// </summary>
     /// <param name="vertices">List of vertices.</param>
     /// <param name="triangles">List of triangle indices.</param>
-    private static void AddMesh(List<Vector3> vertices, List<int> triangles, List<Vector3> normals)
+    private static void AddMesh(List<Vector3> vertices, List<Color> colors, List<int> triangles, List<Vector3> normals)
     {
         var mesh = new Mesh
         {
             vertices = vertices.ToArray(),
             triangles = triangles.ToArray(),
+            colors = colors.ToArray()
         };
 
 
@@ -100,6 +107,7 @@ public static class STLReader
         {
             vertices = vertices.ToArray(),
             triangles = triangles.ToArray(),
+            colors = colors.ToArray()
         };
 
         mesh.RecalculateNormals();

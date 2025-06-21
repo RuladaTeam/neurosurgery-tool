@@ -41,12 +41,6 @@ public static class MeshCombiner
 
         // Assign the combined mesh to the new object
 
-
-
-        Color[] combinedColors = new Color[combinedMesh.vertices.Length];
-        for (int i = 0; i < combinedMesh.vertices.Length; i++)
-            combinedColors[i] = Color.Lerp(Color.red, Color.green, combinedMesh.vertices[i].y);
-
         combinedMeshFilter.mesh = combinedMesh;
 
         //combinedObject.GetComponent<MeshFilter>().mesh = combinedMesh;

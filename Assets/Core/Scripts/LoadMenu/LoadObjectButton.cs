@@ -51,9 +51,9 @@ public class LoadObjectButton : MonoBehaviour
             GameObject colliderParent = new GameObject("Collider");
             GameObject combinedObj = MeshCombiner.CombineMeshes(
                 meshFilters, colliderParent.transform, _startPositionOnTable, _loadedObjectMaterial);
-            
+
             SetupObject(colliderParent, combinedObj);
-            
+
 
             foreach (var obj in objectSeparated)
             {
@@ -78,14 +78,14 @@ public class LoadObjectButton : MonoBehaviour
     {
         GameObject loadedObjectParent = new GameObject("LoadedObjectParent");
         colliderParent.transform.SetParent(loadedObjectParent.transform);
-        
+
         GameObject spawn = GameObject.FindWithTag("Spawn");
         loadedObjectParent.transform.SetParent(spawn.transform);
         loadedObjectParent.transform.position = _startPositionOnTable;
-        
+
         //colliderParent.layer = LayerMask.NameToLayer(Config.DESTRUCTABLE_LAYER_MASK);
         //loadedObjectParent.layer = LayerMask.NameToLayer(Config.DESTRUCTABLE_LAYER_MASK);
-        loadedObjectParent.transform.localScale *= 0.001f;
+        colliderParent.transform.localScale *= 0.001f;
         /*loadedObjectParent.AddComponent<Rigidbody>()
             .AddComponent<Grabbable>()
             .AddComponent<HandGrabInteractable>()
@@ -102,18 +102,19 @@ public class LoadObjectButton : MonoBehaviour
         */
 
 
-        loadedObjectParent.AddComponent<XRGrabInteractable>();
+        
 
-        colliderParent.AddComponent<BoxCollider>();
-        colliderParent.GetComponent<BoxCollider>().isTrigger = true;
+        //colliderParent.AddComponent<BoxCollider>();
+        //colliderParent.GetComponent<BoxCollider>().isTrigger = true;
         combinedObject.AddComponent<BoxCollider>();
 
-
+        /*
         colliderParent.GetComponent<BoxCollider>().center = new Vector3(0, 0, 0);
         colliderParent.GetComponent<BoxCollider>().size = combinedObject.GetComponent<BoxCollider>().size;
-
-        loadedObjectParent.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        loadedObjectParent.GetComponent<Rigidbody>().isKinematic = true;
+        */
+        combinedObject.AddComponent<XRGrabInteractable>();
+        combinedObject.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        combinedObject.GetComponent<Rigidbody>().isKinematic = true;
 
 
         /*
@@ -129,9 +130,9 @@ public class LoadObjectButton : MonoBehaviour
         }
         loadedObjectParent.GetComponent<GrabbableWithName>().RussianName = $"Загруженный объект {objectType}";
         */
-        combinedObject.GetComponent<BoxCollider>().enabled = false;
+        //combinedObject.GetComponent<BoxCollider>().enabled = false;
 
-        loadedObjectParent.GetComponent<XRGrabInteractable>().colliders.Add(loadedObjectParent.GetComponentInChildren<BoxCollider>());
+        //combinedObject.GetComponent<XRGrabInteractable>().colliders.Add(combinedObject.GetComponent<BoxCollider>());
     }
 
 }
