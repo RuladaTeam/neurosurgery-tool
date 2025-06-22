@@ -12,7 +12,8 @@ public class LoadObjectButton : MonoBehaviour
     [SerializeField] private Vector3 _startPositionOnTable;
     [SerializeField] private Material _loadedObjectMaterial;
 
-    private const string URL_BASE = Config.URL + "/archive?name=";
+    private const string URL_BASE_STL = Config.URL + "/archive?name=";
+    private const string URL_BASE_COLOR = Config.URL + "/archive/colors?name=";
 
     private void Start()
     {
@@ -21,47 +22,58 @@ public class LoadObjectButton : MonoBehaviour
 
     public void OnButtonClick()
     {
-        Debug.Log($"suka merzkiy {this.gameObject.name}");
         StartCoroutine(DownloadFile());
     }
 
     private IEnumerator DownloadFile()
     {
-        UnityWebRequest www = UnityWebRequest.Get(URL_BASE + gameObject.GetComponentInChildren<TextMeshProUGUI>().text);
-        yield return www.SendWebRequest();
+        UnityWebRequest stlReq = UnityWebRequest.Get(URL_BASE_STL + gameObject.GetComponentInChildren<TextMeshProUGUI>().text); 
+        yield return stlReq.SendWebRequest();
 
-        if (www.result == UnityWebRequest.Result.ConnectionError)
+        if (stlReq.result == UnityWebRequest.Result.ConnectionError)
         {
-            Debug.Log(www.error);
+            Debug.Log(stlReq.error);
         }
         else
         {
-            Debug.Log("request suka");
-            byte[] stlData = www.downloadHandler.data;
-            List<Mesh> meshes = STLReader.Read(stlData);
-            List<MeshFilter> meshFilters = new List<MeshFilter>();
-            List<GameObject> objectSeparated = new List<GameObject>();
-            foreach (Mesh mesh in meshes)
+            byte[] stlData = stlReq.downloadHandler.data;
+            UnityWebRequest colorReq = UnityWebRequest.Get(URL_BASE_COLOR + gameObject.GetComponentInChildren<TextMeshProUGUI>().text);
+            yield return colorReq.SendWebRequest();
+            if (colorReq.result == UnityWebRequest.Result.ConnectionError)
             {
-                SpawnMesh(mesh, out MeshFilter meshFilter, out GameObject obj);
-                meshFilters.Add(meshFilter);
-                objectSeparated.Add(obj);
+                Debug.Log(colorReq.error);
             }
-
-            GameObject colliderParent = new GameObject("Collider");
-            GameObject combinedObj = MeshCombiner.CombineMeshes(
-                meshFilters, colliderParent.transform, _startPositionOnTable, _loadedObjectMaterial);
-
-            SetupObject(colliderParent, combinedObj);
-
-
-            foreach (var obj in objectSeparated)
+            else
             {
-                if (obj != null)
+
+                byte[] colorData = colorReq.downloadHandler.data;
+                Debug.Log(colorData.Length);
+                List<Mesh> meshes = STLReader.Read(stlData, colorData);
+                List<MeshFilter> meshFilters = new List<MeshFilter>();
+                List<GameObject> objectSeparated = new List<GameObject>();
+                foreach (Mesh mesh in meshes)
                 {
-                    Destroy(obj);
+                    SpawnMesh(mesh, out MeshFilter meshFilter, out GameObject obj);
+                    meshFilters.Add(meshFilter);
+                    objectSeparated.Add(obj);
+                }
+
+                GameObject colliderParent = new GameObject("Collider");
+                GameObject combinedObj = MeshCombiner.CombineMeshes(
+                    meshFilters, colliderParent.transform, _startPositionOnTable, _loadedObjectMaterial);
+
+                SetupObject(colliderParent, combinedObj);
+
+
+                foreach (var obj in objectSeparated)
+                {
+                    if (obj != null)
+                    {
+                        Destroy(obj);
+                    }
                 }
             }
+
         }
     }
 

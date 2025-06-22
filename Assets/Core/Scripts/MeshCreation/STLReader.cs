@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -14,10 +15,11 @@ public static class STLReader
     /// </summary>
     /// <param name="data">Binary STL data as a byte array.</param>
     /// <returns>List of meshes.</returns>
-    public static List<Mesh> Read(byte[] data)
+    public static List<Mesh> Read(byte[] data, byte[] colorData)
     {
         Meshes.Clear();
         var reader = new BinaryReader(new MemoryStream(data));
+        var colorReader = new BinaryReader(new MemoryStream(colorData));
         reader.ReadBytes(80); // Skip the 80-byte header
 
         var trianglesCount = reader.ReadUInt32();
@@ -44,13 +46,36 @@ public static class STLReader
             vertices.Add(vertex2);
             vertices.Add(vertex3);
 
-            colors.Add(new Color(1, 0, 0));
-            colors.Add(new Color(1, 0, 0));
-            colors.Add(new Color(1, 0, 0));
 
             normals.Add(normal);
             normals.Add(normal);
             normals.Add(normal);
+            float r = 0;
+            float g = 0;
+            float b = 0;
+           
+            for (int j = 0; j < 3; ++j)
+            {
+                try
+                {
+                    r = colorReader.ReadByte() / 255f;
+                    g = colorReader.ReadByte() / 255f;
+                    b = colorReader.ReadByte() / 255f;
+                }
+                catch (EndOfStreamException e)
+                {
+
+                }
+                colors.Add(new Color(r, g, b));
+            }
+
+
+            if (i < 10)
+            {
+                Debug.Log($"{vertex3} Color: {r} {g} {b}");
+            }
+
+       
 
             triangles.Add(triangleIndex++);
             triangles.Add(triangleIndex++);
