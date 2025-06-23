@@ -26,9 +26,11 @@ namespace Core.Scripts.MeshCreation
             mesh.triangles = triangles.ToArray();
             mesh.colors = colors.ToArray();
 
+            
+
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
-            mesh.Optimize();
+            //mesh.Optimize();
 
             GameObject loadedObject = new GameObject();
             loadedObject.AddComponent<MeshFilter>().mesh = mesh;

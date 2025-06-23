@@ -23,19 +23,20 @@ namespace Core.Scripts.UI.LoadMenu
             StartCoroutine(DownloadFile());
         }
 
+
         private IEnumerator DownloadFile()
         {
             var vertexRequest = UnityWebRequest.Get(Config.URL_BASE_VERTEX + gameObject.GetComponentInChildren<TextMeshProUGUI>().text);
             var trianglesRequest = UnityWebRequest.Get(Config.URL_BASE_TRIANGLES + gameObject.GetComponentInChildren<TextMeshProUGUI>().text);
-            var colorsRequest = UnityWebRequest.Get(Config.URL_BASE_COLORS + gameObject.GetComponentInChildren<TextMeshProUGUI>().text 
+            var colorsRequest = UnityWebRequest.Get(Config.URL_BASE_COLORS + gameObject.GetComponentInChildren<TextMeshProUGUI>().text
                                                                            + "&density=" + ColorSchemeChanger.CurrentDensityMode);
 
             yield return vertexRequest.SendWebRequest();
             yield return trianglesRequest.SendWebRequest();
             yield return colorsRequest.SendWebRequest();
 
-            if (vertexRequest.result != UnityWebRequest.Result.Success 
-                || trianglesRequest.result != UnityWebRequest.Result.Success 
+            if (vertexRequest.result != UnityWebRequest.Result.Success
+                || trianglesRequest.result != UnityWebRequest.Result.Success
                 || colorsRequest.result != UnityWebRequest.Result.Success)
             {
                 Debug.Log(vertexRequest.error);
@@ -51,17 +52,18 @@ namespace Core.Scripts.UI.LoadMenu
 
             SetupObject(spawnedObject);
         }
-        
+
         private void SetupObject(GameObject obj)
         {
             obj.tag = Config.LOADED_OBJECT_TAG;
             obj.name = gameObject.GetComponentInChildren<TextMeshProUGUI>().text;
             obj.transform.localScale *= 0.001f;
-            
+
             obj.AddComponent<BoxCollider>();
             obj.AddComponent<XRGrabInteractable>();
             obj.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             obj.GetComponent<Rigidbody>().isKinematic = true;
         }
+
     }
 }

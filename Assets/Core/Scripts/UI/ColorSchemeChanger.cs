@@ -16,7 +16,7 @@ namespace Core.Scripts.UI
         [SerializeField] private Toggle _zDepthToggle;
         [SerializeField] private Toggle _sphereToggle;
 
-        public static string CurrentDensityMode { get; private set; } = "y";
+        public static string CurrentDensityMode { get; private set; } = "sphere";
         
         private void Start()
         {
@@ -75,56 +75,15 @@ namespace Core.Scripts.UI
             }
 
             MeshFilter loadedObjectMeshFilter = loadedObject.GetComponent<MeshFilter>();
-            if (loadedObjectMeshFilter == null || loadedObjectMeshFilter.sharedMesh == null)
-            {
-                Debug.LogError("MeshFilter or sharedMesh is missing!");
-                yield break;
-            }
-
             // Load colors
             byte[] colorsData = colorsRequest.downloadHandler.data;
             var colorsReader = new BinaryReader(new MemoryStream(colorsData));
             List<Color> colors = MeshCreator.ReadColors(colorsReader);
 
-            // Create a new mesh copy
-            Mesh originalMesh = loadedObjectMeshFilter.sharedMesh;
-            Mesh mesh = new Mesh();
-            mesh.indexFormat = 
-                IndexFormat.UInt32;
-
-            mesh.vertices = originalMesh.vertices;
-            mesh.triangles = originalMesh.triangles;
-            mesh.uv = originalMesh.uv;
-            mesh.normals = originalMesh.normals;
-            mesh.tangents = originalMesh.tangents;
-            mesh.bounds = originalMesh.bounds;
-
-// If your mesh uses sub-meshes or multiple materials:
-            mesh.subMeshCount = originalMesh.subMeshCount;
-            for (int i = 0; i < originalMesh.subMeshCount; i++)
-            {
-                mesh.SetTriangles(originalMesh.GetTriangles(i), i);
-            }
-
-            // Validate color count
-            if (colors.Count != mesh.vertexCount)
-            {
-                Debug.LogError($"Color count ({colors.Count}) does not match vertex count ({mesh.vertexCount})");
-                yield break;
-            }
 
             // Apply colors
-            mesh.colors = colors.ToArray();
+            loadedObjectMeshFilter.mesh.colors = colors.ToArray();
 
-            // Finalize
-            mesh.RecalculateBounds();
-            mesh.RecalculateNormals();
-            mesh.Optimize();
-
-            // Replace mesh
-            loadedObjectMeshFilter.mesh = mesh;
-
-            Debug.Log("Colors applied successfully.");
             
         }
 
@@ -145,9 +104,9 @@ namespace Core.Scripts.UI
                     _sphereToggle.SetIsOnWithoutNotify(false);
                     break;
                 case "x":
-                    _zDepthToggle.SetIsOnWithoutNotify(false);
-                    _yDepthToggle.SetIsOnWithoutNotify(false);
                     _xDepthToggle.SetIsOnWithoutNotify(true);
+                    _yDepthToggle.SetIsOnWithoutNotify(false);
+                    _zDepthToggle.SetIsOnWithoutNotify(false);
                     _sphereToggle.SetIsOnWithoutNotify(false);
                     break;
                 case "sphere":
