@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3288996791562691443}
   - component: {fileID: 6367538449480739427}
   m_Layer: 6
-  m_Name: Cylinder
+  m_Name: TopNidlle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
