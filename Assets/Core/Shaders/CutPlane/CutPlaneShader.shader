@@ -18,6 +18,9 @@ Shader "Custom/CutPlaneWithVertexColor"
             Name "ForwardBase"
             Tags { "LightMode" = "ForwardBase" }
 
+            
+            Cull Off
+
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -56,6 +59,7 @@ Shader "Custom/CutPlaneWithVertexColor"
 
             fixed4 frag(v2f i) : SV_Target
             {
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
                 // Signed distance to the cut plane
                 float3 planeNormal = normalize(_CutPlaneNormal.xyz);
                 float dist = dot(i.worldPos.xyz - _CutPlanePoint.xyz, planeNormal);
@@ -85,6 +89,9 @@ Shader "Custom/CutPlaneWithVertexColor"
             Tags { "LightMode" = "ForwardAdd" }
             Blend One One
 
+            
+            Cull Off
+
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -123,6 +130,7 @@ Shader "Custom/CutPlaneWithVertexColor"
 
             fixed4 frag(v2f i) : SV_Target
             {
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
                 // Signed distance to the cut plane
                 float3 planeNormal = normalize(_CutPlaneNormal.xyz);
                 float dist = dot(i.worldPos.xyz - _CutPlanePoint.xyz, planeNormal);

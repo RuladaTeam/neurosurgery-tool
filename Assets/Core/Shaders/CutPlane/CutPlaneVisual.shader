@@ -15,6 +15,8 @@ Shader "Custom/CutPlaneVisual"
 
         Pass
         {
+
+
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -46,6 +48,7 @@ Shader "Custom/CutPlaneVisual"
 
             fixed4 frag (v2f i) : SV_Target
             {
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
                 // Flip the distance so center has highest value, edges lowest
                 float2 clampedUV = saturate(i.uv); // Clamp UVs to [0..1]
                 float distX = min(clampedUV.x, 1.0 - clampedUV.x);
