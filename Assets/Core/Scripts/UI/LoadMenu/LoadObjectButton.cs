@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Dynamic;
 using Core.Scripts.MeshCreation;
 using TMPro;
 using UnityEngine;
@@ -59,12 +60,12 @@ namespace Core.Scripts.UI.LoadMenu
             obj.tag = Config.LOADED_OBJECT_TAG;
             obj.name = gameObject.GetComponentInChildren<TextMeshProUGUI>().text;
             obj.transform.localScale *= 0.001f;
-
+        
+            obj.transform.position = Vector3.up;
             obj.AddComponent<BoxCollider>();
             obj.AddComponent<XRGrabInteractable>();
             obj.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             obj.GetComponent<Rigidbody>().isKinematic = true;
         }
-
     }
 }
