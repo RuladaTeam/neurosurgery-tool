@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -21,8 +22,18 @@ namespace Core.Scripts.MeshCreation
             List<Vector3> vertices = ReadVertices(vertexReader);
             List<int> triangles = ReadTriangles(trianglesReader);
             List<Color> colors = ReadColors(colorsReader);
-            
-            mesh.vertices = vertices.ToArray();
+
+
+            Vector3 visualCenter = ComputeVisualCenter(vertices);
+
+            List<Vector3> centeredVertices = new List<Vector3>();
+            foreach (Vector3 v in vertices)
+            {
+                centeredVertices.Add(v - visualCenter);
+            }
+
+
+            mesh.vertices = centeredVertices.ToArray();
             mesh.triangles = triangles.ToArray();
             mesh.colors = colors.ToArray();
             
@@ -30,6 +41,7 @@ namespace Core.Scripts.MeshCreation
             mesh.RecalculateBounds();
 
             GameObject loadedObject = new GameObject();
+            loadedObject.transform.position = visualCenter;
             loadedObject.AddComponent<MeshFilter>().mesh = mesh;
             MeshRenderer meshRenderer = loadedObject.AddComponent<MeshRenderer>();
             meshRenderer.material = material;
@@ -77,6 +89,22 @@ namespace Core.Scripts.MeshCreation
             }
 
             return colors;
+        }
+
+
+        public static Vector3 ComputeVisualCenter(List<Vector3> vertices)
+        {
+            if (vertices == null || vertices.Count == 0)
+                throw new System.ArgumentException("Vertex list is empty");
+
+            Vector3 sum = Vector3.zero;
+
+            foreach (Vector3 v in vertices)
+            {
+                sum += v;
+            }
+
+            return sum / vertices.Count;
         }
     }
 }
