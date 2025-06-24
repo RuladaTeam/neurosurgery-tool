@@ -23,13 +23,13 @@ namespace Core.Scripts.UI.LoadMenu
             StartCoroutine(DownloadFile());
         }
 
-
         private IEnumerator DownloadFile()
         {
-            var vertexRequest = UnityWebRequest.Get(Config.URL_BASE_VERTEX + gameObject.GetComponentInChildren<TextMeshProUGUI>().text);
-            var trianglesRequest = UnityWebRequest.Get(Config.URL_BASE_TRIANGLES + gameObject.GetComponentInChildren<TextMeshProUGUI>().text);
-            var colorsRequest = UnityWebRequest.Get(Config.URL_BASE_COLORS + gameObject.GetComponentInChildren<TextMeshProUGUI>().text
-                                                                           + "&density=" + ColorSchemeChanger.CurrentDensityMode);
+            string objectName = gameObject.GetComponentInChildren<TextMeshProUGUI>().text;
+            var vertexRequest = UnityWebRequest.Get(Config.URL_BASE_VERTEX + objectName);
+            var trianglesRequest = UnityWebRequest.Get(Config.URL_BASE_TRIANGLES + objectName);
+            var colorsRequest = UnityWebRequest.Get(Config.URL_BASE_COLORS + objectName + "&density=" 
+                                                    + ColorSchemeChanger.CurrentDensityMode);
 
             yield return vertexRequest.SendWebRequest();
             yield return trianglesRequest.SendWebRequest();
@@ -44,6 +44,7 @@ namespace Core.Scripts.UI.LoadMenu
                 Debug.Log(colorsRequest.error);
                 yield break;
             }
+            
             byte[] vertexData = vertexRequest.downloadHandler.data;
             byte[] trianglesData = trianglesRequest.downloadHandler.data;
             byte[] colorsData = colorsRequest.downloadHandler.data;

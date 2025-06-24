@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 namespace Core.Scripts.UI.LoadMenu
 {
@@ -10,14 +11,16 @@ namespace Core.Scripts.UI.LoadMenu
     {
         [SerializeField] private GameObject _buttonPrefab;
         [SerializeField] private Transform _content;
+        [SerializeField] private Button _refreshButton;
 
-        private readonly List<string> _namesArray = new();
         private const string URL = Config.URL + "/archive/names";
 
         private void Start()
         {
             StartCoroutine(FetchStringsFromApi());
+            _refreshButton.onClick.AddListener(RefreshList);
         }
+        
         IEnumerator FetchStringsFromApi()
         {
             UnityWebRequest www = UnityWebRequest.Get(URL);
@@ -36,8 +39,7 @@ namespace Core.Scripts.UI.LoadMenu
             }
 
             string[] receivedNames = text.Substring(1, text.Length - 2).Split(",");
-
-
+            
             for (int i = _content.childCount - 1; i >= 0; i--)
             {
                 Destroy(_content.GetChild(i).gameObject);
@@ -45,14 +47,12 @@ namespace Core.Scripts.UI.LoadMenu
 
             foreach (var item in receivedNames)
             {
-                _namesArray.Add(item);
                 GameObject spawnedButton = Instantiate(_buttonPrefab, _content);
                 spawnedButton.GetComponentInChildren<TextMeshProUGUI>().text = item;
             }
-
         }
 
-        public void RefreshList()
+        private void RefreshList()
         {
             StartCoroutine(FetchStringsFromApi());
         }

@@ -25,12 +25,9 @@ namespace Core.Scripts.MeshCreation
             mesh.vertices = vertices.ToArray();
             mesh.triangles = triangles.ToArray();
             mesh.colors = colors.ToArray();
-
             
-
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
-            //mesh.Optimize();
 
             GameObject loadedObject = new GameObject();
             loadedObject.AddComponent<MeshFilter>().mesh = mesh;
@@ -77,23 +74,6 @@ namespace Core.Scripts.MeshCreation
                 var g = colorsReader.ReadByte() / 255f;
                 var b = colorsReader.ReadByte() / 255f;
                 colors.Add(new Color(r, g, b));
-            }
-
-            return colors;
-        }
-        
-        public static List<Color32> ReadColors32(BinaryReader colorsReader)
-        {
-            var colors = new List<Color32>();
-
-            // Ensure there are at least 4 bytes left to read
-            while (colorsReader.BaseStream.Position + sizeof(byte) * 3 <= colorsReader.BaseStream.Length)
-            {
-                byte r = colorsReader.ReadByte();
-                byte g = colorsReader.ReadByte();
-                byte b = colorsReader.ReadByte();
-
-                colors.Add(new Color32(r, g, b, 1));
             }
 
             return colors;
