@@ -62,29 +62,30 @@ namespace Core.Scripts.UI
 
         private static IEnumerator ChangeColorScheme()
         {
-            GameObject loadedObject = GameObject.FindGameObjectWithTag(Config.LOADED_OBJECT_TAG);
-            if (!loadedObject) yield break;
+            GameObject[] loadedObjects = GameObject.FindGameObjectsWithTag(Config.LOADED_OBJECT_TAG);
+            if (loadedObjects.Length == 0) yield break;
 
-            var colorsRequest = UnityWebRequest.Get(Config.URL_BASE_COLORS + loadedObject.name + "&density=" + CurrentDensityMode);
-            yield return colorsRequest.SendWebRequest();
-
-            if (colorsRequest.result != UnityWebRequest.Result.Success)
+            foreach (var loadedObject in loadedObjects)
             {
-                Debug.Log(colorsRequest.result);
-                yield break;
+                var colorsRequest = UnityWebRequest.Get(Config.URL_BASE_COLORS + loadedObject.name + "&density=" + CurrentDensityMode);
+                yield return colorsRequest.SendWebRequest();
+
+                if (colorsRequest.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.Log(colorsRequest.result);
+                    yield break;
+                }
+
+                MeshFilter loadedObjectMeshFilter = loadedObject.GetComponent<MeshFilter>();
+                // Load colors
+                byte[] colorsData = colorsRequest.downloadHandler.data;
+                var colorsReader = new BinaryReader(new MemoryStream(colorsData));
+                List<Color> colors = MeshCreator.ReadColors(colorsReader);
+
+
+                // Apply colors
+                loadedObjectMeshFilter.mesh.colors = colors.ToArray();
             }
-
-            MeshFilter loadedObjectMeshFilter = loadedObject.GetComponent<MeshFilter>();
-            // Load colors
-            byte[] colorsData = colorsRequest.downloadHandler.data;
-            var colorsReader = new BinaryReader(new MemoryStream(colorsData));
-            List<Color> colors = MeshCreator.ReadColors(colorsReader);
-
-
-            // Apply colors
-            loadedObjectMeshFilter.mesh.colors = colors.ToArray();
-
-            
         }
 
         private void ResetAllToggles()

@@ -13,6 +13,7 @@ namespace Core.Scripts.UI.LoadMenu
     {
         [SerializeField] private Vector3 _startPositionOnTable;
         [SerializeField] private Material _loadedObjectMaterial;
+        [SerializeField] private GameObject _objectMenuPrefab;
 
         private void Start()
         {
@@ -58,14 +59,20 @@ namespace Core.Scripts.UI.LoadMenu
         private void SetupObject(GameObject obj)
         {
             obj.tag = Config.LOADED_OBJECT_TAG;
+            obj.layer = LayerMask.NameToLayer(Config.LOADED_OBJECT_LAYER);
             obj.name = gameObject.GetComponentInChildren<TextMeshProUGUI>().text;
-            obj.transform.localScale *= 0.001f;
+            obj.transform.localScale *= 0.002f;
             obj.transform.rotation = Quaternion.Euler(new Vector3(180, 180, 0));
         
             obj.transform.position = Vector3.up;
             obj.AddComponent<BoxCollider>();
+            
+            LoadedObject loadedObjectComponent = obj.AddComponent<LoadedObject>();
             obj.AddComponent<XRGrabInteractable>().useDynamicAttach = true;
-            obj.AddComponent<BoxCollider>();
+            BoxCollider hoverCollider = obj.AddComponent<BoxCollider>();
+            GameObject objectMenu = GameObject.Instantiate(_objectMenuPrefab, obj.transform);
+            loadedObjectComponent.Init(hoverCollider, objectMenu);
+            
             obj.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             obj.GetComponent<Rigidbody>().isKinematic = true;
         }
