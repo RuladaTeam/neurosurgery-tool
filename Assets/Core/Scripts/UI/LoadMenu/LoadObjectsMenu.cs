@@ -51,7 +51,7 @@ namespace Core.Scripts.UI.LoadMenu
                 spawnedButton.GetComponentInChildren<TextMeshProUGUI>().text = item;
             }
         }
-
+        
         private void RefreshList()
         {
             StartCoroutine(FetchStringsFromApi());
