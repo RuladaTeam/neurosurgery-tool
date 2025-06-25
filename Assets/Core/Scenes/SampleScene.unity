@@ -1857,6 +1857,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b87c9522d687f44b999195f6924a27b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  filePath: Assets/volume_data_hu.raw
+  width: 512
+  height: 256
+  depth: 512
+  dataMin: 0
+  dataMax: 4000
+  intensity: 1
+  stepSize: 0.01
+  opacity: 1
+  VolumeScale: {x: 1, y: 1, z: 1}
 --- !u!4 &639207370
 Transform:
   m_ObjectHideFlags: 0
