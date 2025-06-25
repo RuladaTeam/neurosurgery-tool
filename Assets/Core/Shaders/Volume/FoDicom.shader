@@ -10,6 +10,7 @@ Properties
     _Intensity("Intensity", Range(0.0, 1.0)) = 0.1
     _DataMin("Data min", Range(-1000, 8920)) = 0
     _DataMax("Data max", Range(-1000, 8920)) = 8920
+    _yOffset("Y Offset", Range(-1, 1)) = 0.58
     [Enum(UnityEngine.Rendering.BlendMode)] _BlendSrc ("Blend Src", Float) = 5
     [Enum(UnityEngine.Rendering.BlendMode)] _BlendDst ("Blend Dst", Float) = 1
 
@@ -44,6 +45,7 @@ int _Iteration;
 float _Intensity;
 float _MinX, _MaxX, _MinY, _MaxY, _MinZ, _MaxZ;
 float _DataMin, _DataMax;
+float _yOffset;
 
 struct Ray
 {
@@ -68,9 +70,10 @@ inline float sampleVolume(float3 pos)
     float y = step(pos.y, _MaxY) * step(_MinY, pos.y);
     float z = step(pos.z, _MaxZ) * step(_MinZ, pos.z);
 
+    pos.y+=_yOffset;
+
     float val = tex3D(_Volume, pos).r;
 
-    // Normalize based on known range
     float normalizedVal = saturate((val - _DataMin) / (_DataMax - _DataMin));
 
     return normalizedVal * (x * y * z);

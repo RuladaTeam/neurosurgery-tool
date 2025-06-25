@@ -27,6 +27,10 @@ public class VolumeLoader : MonoBehaviour
     public float _huValue = 8920f;
 
 
+    [Range(-1, 1f)]
+    public float _yOffset = .58f;
+
+
 
     public Vector3 VolumeScale = new Vector4(1, 1, 0.5f, 1);
 
@@ -60,8 +64,9 @@ public class VolumeLoader : MonoBehaviour
                 material.SetFloat("_DataMax", data_max);
                 material.SetFloat("_Intensity", intensity);
                 material.SetFloat("_Iteration", iteration);
+                material.SetFloat("_yOffset", _yOffset);
 
-                UpdateTransferFunction();
+            UpdateTransferFunction();
         }
     }
 
