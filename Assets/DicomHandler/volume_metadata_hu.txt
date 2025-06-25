@@ -1,0 +1,4 @@
+Raw Min: 0
+Raw Max: 8920
+Shape: (256, 512, 512)
+Dtype: int16

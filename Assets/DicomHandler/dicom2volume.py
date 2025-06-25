@@ -8,7 +8,7 @@ from PyQt5.QtCore import Qt
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
 
-
+first_slice = 0
 
 def load_dicom_series(directory, target_description="+C Sag T1 FSPGR 3D"):
     """Load DICOM slices from the specified series only."""
@@ -42,7 +42,9 @@ def load_dicom_series(directory, target_description="+C Sag T1 FSPGR 3D"):
         raise ValueError("Slices missing or invalid ImagePositionPatient tag.") from e
 
     first_shape = slices[0].pixel_array.shape
+
     valid_slices = [s for s in slices if s.pixel_array.shape == first_shape]
+    valid_slices = slices
 
     print(f"Loaded {len(valid_slices)} consistent slices.")
     image_data = np.stack([s.pixel_array for s in valid_slices]).astype(np.int16)
@@ -133,14 +135,32 @@ class VolumeViewer(QMainWindow):
             array_type=vtk.VTK_SHORT
         )
 
+        # Создание vtkImageData
         imageData = vtk.vtkImageData()
-        dimensions = self.image_data.shape[1], self.image_data.shape[0], self.image_data.shape[2]
+        dimensions = self.image_data.shape[1], self.image_data.shape[2], self.image_data.shape[0]
         imageData.SetDimensions(dimensions)
+        
+        # Установка оригинальной точки (ImagePositionPatient из первого среза)
+        first_slice = pydicom.dcmread(os.path.join(dicom_directory, os.listdir(dicom_directory)[0]))
+        origin = first_slice.ImagePositionPatient
+        imageData.SetOrigin(origin)
+
+        # Установка шагов между точками (PixelSpacing и SliceThickness)
+        pixel_spacing = first_slice.PixelSpacing
+        slice_thickness = first_slice.SliceThickness
+        spacing = [pixel_spacing[0], pixel_spacing[1], slice_thickness/2]
+        imageData.SetSpacing(spacing)
+        
+        # Установка скалярных данных
         imageData.GetPointData().SetScalars(vtk_data)
 
+        # Остальной код для рендеринга...
         self.renderer = vtk.vtkRenderer()
         self.vtk_widget.GetRenderWindow().AddRenderer(self.renderer)
         interactor = self.vtk_widget.GetRenderWindow().GetInteractor()
+    
+        # Transfer functions и VolumeProperty...
+        # ...
 
         # Transfer functions
         self.color_tf = vtk.vtkColorTransferFunction()
@@ -218,7 +238,7 @@ class VolumeViewer(QMainWindow):
 
 
 if __name__ == "__main__":
-    dicom_directory = r"A/A"
+    dicom_directory = r"C:\Users\timon\Documents\tvoibatya\A"
 
     if not os.path.isdir(dicom_directory):
         raise FileNotFoundError(f"DICOM directory not found: {dicom_directory}")
