@@ -25,7 +25,7 @@
             #pragma fragment frag
             #include "UnityCG.cginc"
 
-            #define VOLUME_DIM float3(512, 256, 512)
+            #define VOLUME_DIM float3(512, 512, 512)
 
             sampler3D _VolumeTex;
             float _DataMin, _DataMax;
