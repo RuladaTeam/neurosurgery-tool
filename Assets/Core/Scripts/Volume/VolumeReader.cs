@@ -10,21 +10,23 @@ public class VolumeLoader : MonoBehaviour
     public int height = 256;
     public int depth = 512;
 
-    [Range(0, 4000)]
-    public float dataMin = -1000;
-
-    [Range(-1000, 8000)]
-    public float dataMax = 4000;
-
     [Range(0.001f, 1f)]
     public float intensity = 1.0f;
 
     [Range(1f, 10000f)]
-    public float stepSize = 1f;
+    public float iteration = 1f;
+
+    [Range(-1000, 8920f)]
+    public float data_min =0;
+
+    [Range(-1000, 8920f)]
+    public float data_max = 8920f;
 
 
-    [Range(0.001f, 1f)]
-    public float opacity = 1.0f;
+    [Range(-1000, 8920f)]
+    public float _huValue = 8920f;
+
+
 
     public Vector3 VolumeScale = new Vector4(1, 1, 0.5f, 1);
 
@@ -54,30 +56,74 @@ public class VolumeLoader : MonoBehaviour
                 material.SetFloat("_MinZ", minZ);
                 material.SetFloat("_MaxZ", maxZ);
 
-                material.SetFloat("_DataMin", dataMin);
-                material.SetFloat("_DataMax", dataMax);
+                material.SetFloat("_DataMin", data_min);
+                material.SetFloat("_DataMax", data_max);
                 material.SetFloat("_Intensity", intensity);
-                material.SetFloat("_Iteration", stepSize);
+                material.SetFloat("_Iteration", iteration);
+
+                UpdateTransferFunction();
         }
-    } 
+    }
+
+    void UpdateTransferFunction()
+    {
+        for (int x = 0; x < transferTex.width; x++)
+        {
+            float huValue = _huValue;
+
+            Color color = Color.clear;
+
+            // Air
+            if (huValue < -500)
+            {
+                color = new Color(0, 0, 0, 0);
+            }
+            // Soft Tissue
+            else if (huValue >= 400 && huValue <= 1500)
+            {
+                float alpha = Mathf.InverseLerp(400, 1500, huValue);
+                color = new Color(0.8f, 0.5f, 0.3f, alpha * 0.3f);
+            }
+            // Bone
+            else if (huValue > 1500)
+            {
+                float alpha = Mathf.InverseLerp(1500, data_max, huValue);
+                color = new Color(1, 1, 1, Mathf.Min(alpha * 2, 1));
+            }
+            // Default tissue
+            else
+            {
+                float gray = Mathf.InverseLerp(data_min, data_max, huValue);
+                color = new Color(gray, gray, gray, gray * 0.2f);
+            }
+
+            // Inside the loop in UpdateTransferFunction()
+            float dist = Mathf.Abs(huValue - _huValue);
+            float weight = 1.0f - Mathf.InverseLerp(0, 200, dist); // blend over 200 HU range
+
+            color.a = weight * 0.8f; // boost opacity near target
+
+            transferTex.SetPixel(x, 0, color);
+        }
+
+        transferTex.Apply();
+
+        // Optional: update material immediately
+        Renderer renderer = GetComponent<Renderer>();
+        if (renderer && renderer.material)
+        {
+            renderer.material.SetTexture("_Transfer", transferTex);
+        }
+
+        }
+
 
     void Start()
     {
 
         transferTex = new Texture2D(width, 1, TextureFormat.RGBAFloat, false);
 
-        for (int x = 0; x < width; x++)
-        {
-            float t = x / (float)(width - 1);
-
-            // Simple grayscale mapping
-            float value = t;
-            float alpha = t;
-
-            transferTex.SetPixel(x, 0, new Color(value, value, value, alpha));
-        }
-
-        transferTex.Apply();
+        UpdateTransferFunction();
 
         Renderer renderer = GetComponent<Renderer>();
         if (renderer && renderer.material)
@@ -86,7 +132,7 @@ public class VolumeLoader : MonoBehaviour
         }
 
 
-        transform.localScale = new Vector3(1, 1, .5f);
+        transform.localScale = new Vector3(1, .5f, 1f);
         if (!File.Exists(filePath))
         {
             Debug.LogError("File not found: " + filePath);
@@ -123,7 +169,7 @@ public class VolumeLoader : MonoBehaviour
         if (renderer != null && renderer.material != null)
         {
             renderer.material.SetTexture("_Volume", volumeTexture);
-            renderer.material.SetFloat("_DataMin",0);
+            renderer.material.SetFloat("_DataMin", 0);
             renderer.material.SetFloat("_DataMax", 8920);
             renderer.material.SetFloat("_Intensity", 1.0f);
             material = renderer.material;
@@ -131,6 +177,6 @@ public class VolumeLoader : MonoBehaviour
         else
         {
             Debug.LogError("Renderer or material missing!");
-        }
+        }   
     }
 }
