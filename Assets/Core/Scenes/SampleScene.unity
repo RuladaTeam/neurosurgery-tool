@@ -1864,7 +1864,7 @@ MonoBehaviour:
   height: 256
   depth: 512
   intensity: 0.384
-  iteration: 1571
+  iteration: 1512
   data_min: 1884
   data_max: 8055
   _huValue: -77
@@ -1886,7 +1886,7 @@ Transform:
   m_GameObject: {fileID: 639207365}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 1, w: 0.0000029504295}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.327, z: 0.122}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

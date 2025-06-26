@@ -11,8 +11,8 @@ Properties
     _DataMin("Data min", Range(-1000, 8920)) = 0
     _DataMax("Data max", Range(-1000, 8920)) = 8920
     _yOffset("Y Offset", Range(-1, 1)) = 0.58
-    [Enum(UnityEngine.Rendering.BlendMode)] _BlendSrc ("Blend Src", Float) = 5
-    [Enum(UnityEngine.Rendering.BlendMode)] _BlendDst ("Blend Dst", Float) = .1
+    [Enum(UnityEngine.Rendering.BlendMode)] _BlendSrc ("Blend Src", Float) = 10
+    [Enum(UnityEngine.Rendering.BlendMode)] _BlendDst ("Blend Dst", Float) = 1
 
     [Header(Ranges)]
     _MinX("MinX", Range(0, 1)) = 0.0

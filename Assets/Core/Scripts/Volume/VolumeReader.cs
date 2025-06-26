@@ -6,9 +6,9 @@ using UnityEngine;
 public class VolumeLoader : MonoBehaviour
 {
     public string filePath = "Assets/volume_data.raw";
-    public int width = 512;
-    public int height = 256;
-    public int depth = 512;
+    public int width = 128;
+    public int height = 64;
+    public int depth = 128;
 
     [Range(0.001f, 1f)]
     public float intensity = 1.0f;
@@ -168,6 +168,7 @@ public class VolumeLoader : MonoBehaviour
             pixels[i] = new Color(val, val, val, 1);
         }
 
+        volumeTexture.filterMode = FilterMode.Bilinear;
         volumeTexture.SetPixels(pixels);
         volumeTexture.Apply();
 

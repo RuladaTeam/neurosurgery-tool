@@ -6,9 +6,9 @@ from vtk.util import numpy_support
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QSlider, QLabel
 from PyQt5.QtCore import Qt
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
+from scipy.ndimage import zoom
 
 
-first_slice = 0
 
 def load_dicom_series(directory, target_description="+C Sag T1 FSPGR 3D"):
     """Load DICOM slices from the specified series only."""
@@ -139,17 +139,23 @@ class VolumeViewer(QMainWindow):
         imageData = vtk.vtkImageData()
         dimensions = self.image_data.shape[1], self.image_data.shape[2], self.image_data.shape[0]
         imageData.SetDimensions(dimensions)
+
+        self.dimensions = dimensions
         
         # Установка оригинальной точки (ImagePositionPatient из первого среза)
         first_slice = pydicom.dcmread(os.path.join(dicom_directory, os.listdir(dicom_directory)[0]))
         origin = first_slice.ImagePositionPatient
         imageData.SetOrigin(origin)
 
+        self.origin = origin
+
         # Установка шагов между точками (PixelSpacing и SliceThickness)
         pixel_spacing = first_slice.PixelSpacing
         slice_thickness = first_slice.SliceThickness
         spacing = [pixel_spacing[0], pixel_spacing[1], slice_thickness/2]
         imageData.SetSpacing(spacing)
+
+        self.spacing = spacing
         
         # Установка скалярных данных
         imageData.GetPointData().SetScalars(vtk_data)
@@ -238,7 +244,7 @@ class VolumeViewer(QMainWindow):
 
 
 if __name__ == "__main__":
-    dicom_directory = r"C:\Users\timon\Documents\tvoibatya\A"
+    dicom_directory = r"A/A"
 
     if not os.path.isdir(dicom_directory):
         raise FileNotFoundError(f"DICOM directory not found: {dicom_directory}")
@@ -255,27 +261,67 @@ if __name__ == "__main__":
         mapper = volume.GetMapper()
         imageData = mapper.GetInput()  # This is vtkImageData
 
+        imageData.SetDimensions(viewer.dimensions)
+        imageData.SetOrigin(viewer.origin)
+        imageData.SetSpacing(viewer.spacing)
+
+        
+        flat_data = volume_data.ravel()
+        vtk_data = numpy_support.numpy_to_vtk(
+            num_array=flat_data,
+            deep=True,
+            array_type=vtk.VTK_SHORT
+        )
+
+        
+        # Установка скалярных данных
+        imageData.GetPointData().SetScalars(vtk_data)
+
         dimensions = imageData.GetDimensions()
         scalar_type = imageData.GetScalarType()
 
         point_data = imageData.GetPointData().GetScalars()
         array = numpy_support.vtk_to_numpy(point_data)
+        
 
         # Reshape according to dimensions (x, y, z) -> (z, y, x)
         array = array.reshape(dimensions[2], dimensions[1], dimensions[0])
+        
 
         data_min = -1000
         data_max = 4000
         array = np.clip(array, data_min, data_max)
         array = (array - data_min) / (data_max - data_min + 1e-6)  # avoid div by zero
 
-        array = array.astype(np.float32)
+        #array = array.astype(np.float32)
+        
+        target_shape = (64, 128, 128) 
+
+        # Calculate zoom factors for each dimension
+        zoom_factors = [
+            target_shape[0] / array.shape[0],
+            target_shape[1] / array.shape[1],
+            target_shape[2] / array.shape[2]
+        ]
+
+        # Downscale using cubic interpolation (order=3)
+        array_downscaled = zoom(array, zoom_factors, order=1)  # order=1 is linear interpolation
+
+        # Optional: Cast back to int16 if needed
+        array_downscaled = np.clip(array_downscaled, np.iinfo(np.int16).min, np.iinfo(np.int16).max)
+        array = array_downscaled.astype(np.int16)
+        
+        
         array.tofile("volume_data.raw")
         
         raw_array = numpy_support.vtk_to_numpy(point_data)
         raw_array = raw_array.reshape(dimensions[2], dimensions[1], dimensions[0])
         raw_array.astype(np.int16).tofile("volume_data_hu.raw")
 
+        print(f"Raw array shape: {raw_array.shape} Dimensions: {dimensions}")
+
+
+        
         with open("volume_metadata_hu.txt", "w") as f:
             f.write(f"Raw Min: {raw_array.min()}\n")
             f.write(f"Raw Max: {raw_array.max()}\n")
