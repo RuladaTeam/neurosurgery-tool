@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class VolumeLoader : MonoBehaviour
 {
-    public string filePath = "Assets/volume_data_hu.raw";
+    public string filePath = "Assets/volume_data.raw";
     public int width = 512;
     public int height = 256;
     public int depth = 512;
