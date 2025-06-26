@@ -306,4 +306,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _startPositionOnTable: {x: 0, y: 0.5, z: 0}
   _loadedObjectMaterial: {fileID: 2100000, guid: 0e2ada6ae9c1c7b43a7062f0a207519f, type: 2}
-  _objectMenuPrefab: {fileID: 4366966698207968839, guid: c047fdb1a3f457a41bfdd71e1dabfa43, type: 3}
+  _objectMenuPrefab: {fileID: 9009716421080398232, guid: ed9bf0e7758c0374aba5cbaa47e50dfc, type: 3}

@@ -1,5 +1,5 @@
 using System.Collections;
-using System.Dynamic;
+using Core.Scripts.LoadedObjects;
 using Core.Scripts.MeshCreation;
 using TMPro;
 using UnityEngine;
@@ -30,8 +30,7 @@ namespace Core.Scripts.UI.LoadMenu
             string objectName = gameObject.GetComponentInChildren<TextMeshProUGUI>().text;
             var vertexRequest = UnityWebRequest.Get(Config.URL_BASE_VERTEX + objectName);
             var trianglesRequest = UnityWebRequest.Get(Config.URL_BASE_TRIANGLES + objectName);
-            var colorsRequest = UnityWebRequest.Get(Config.URL_BASE_COLORS + objectName + "&density=" 
-                                                    + ColorSchemeChanger.CurrentDensityMode);
+            var colorsRequest = UnityWebRequest.Get(Config.URL_BASE_COLORS + objectName + "&density=sphere");
 
             yield return vertexRequest.SendWebRequest();
             yield return trianglesRequest.SendWebRequest();
@@ -69,9 +68,9 @@ namespace Core.Scripts.UI.LoadMenu
             
             LoadedObject loadedObjectComponent = obj.AddComponent<LoadedObject>();
             obj.AddComponent<XRGrabInteractable>().useDynamicAttach = true;
-            BoxCollider hoverCollider = obj.AddComponent<BoxCollider>();
-            GameObject objectMenu = GameObject.Instantiate(_objectMenuPrefab, obj.transform);
-            loadedObjectComponent.Init(hoverCollider, objectMenu);
+            GameObject objectMenu = Instantiate(_objectMenuPrefab, obj.transform);
+            objectMenu.transform.localScale *= 1 / obj.transform.localScale.x;
+            loadedObjectComponent.SetObjectMenu(objectMenu);
             
             obj.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             obj.GetComponent<Rigidbody>().isKinematic = true;

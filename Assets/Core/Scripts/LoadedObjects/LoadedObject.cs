@@ -1,33 +1,36 @@
 using UnityEngine;
 
-namespace Core.Scripts
+namespace Core.Scripts.LoadedObjects
 {
     public class LoadedObject : MonoBehaviour
     {
         public bool IsHovered { get; private set; }
 
-        private BoxCollider _hoverCollider;
-        private GameObject _objectMenu;
+        [SerializeField] private GameObject _objectMenu;
+        [SerializeField] private bool _showUIOnHover = true;
+
+        private void Start()
+        {
+            if (_objectMenu)
+            {
+                _objectMenu.SetActive(false);
+            }
+        }
         
         public void OnHover()
         {
-            Debug.Log("OnHover");
-            _hoverCollider.size *= 2;
             IsHovered = true;
             _objectMenu.SetActive(true);
         }
 
         public void OnUnhover()
         {
-            Debug.Log("OnUnhover");
-            _hoverCollider.size /= 2;
             IsHovered = false;
             _objectMenu.SetActive(false);
         }
 
-        public void Init(BoxCollider boxCollider, GameObject objectMenu)
+        public void SetObjectMenu(GameObject objectMenu)
         {
-            _hoverCollider = boxCollider;
             _objectMenu = objectMenu;
             _objectMenu.SetActive(false);
         }
