@@ -69,7 +69,9 @@ namespace Core.Scripts.UI.LoadMenu
             LoadedObject loadedObjectComponent = obj.AddComponent<LoadedObject>();
             obj.AddComponent<XRGrabInteractable>().useDynamicAttach = true;
             GameObject objectMenu = Instantiate(_objectMenuPrefab, obj.transform);
-            objectMenu.transform.localScale *= 1 / obj.transform.localScale.x;
+            objectMenu.transform.localScale *= (1 / obj.transform.localScale.x)/5;
+            objectMenu.transform.rotation = new Quaternion(0, 0, 0, 0);
+            
             loadedObjectComponent.SetObjectMenu(objectMenu);
             
             obj.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;

@@ -103,7 +103,7 @@ float4 frag(v2f i) : SV_Target
     ray.dir = localDir;
     intersection(ray);
 
-    int n = 100;
+    int n = 300;
     float3 localStep = localDir * ray.tmax / n;
     float3 localPos = i.localPos;
     float4 output = 0;

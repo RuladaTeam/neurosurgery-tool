@@ -1,3 +1,4 @@
+using Core.Scripts.UI;
 using UnityEngine;
 
 namespace Core.Scripts.LoadedObjects
@@ -20,7 +21,7 @@ namespace Core.Scripts.LoadedObjects
         public void OnHover()
         {
             IsHovered = true;
-            _objectMenu.SetActive(true);
+            _objectMenu.GetComponent<LoadedObjectUI>().OnSetActive();
         }
 
         public void OnUnhover()

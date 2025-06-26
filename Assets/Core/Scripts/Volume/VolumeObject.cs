@@ -31,6 +31,14 @@ public class VolumeObject : MonoBehaviour
     [Range(0, 1)] public float MinZ = 0.0f;
     [Range(0, 1)] public float MaxZ = 1.0f;
 
+
+    [Header("Volume Frame Clipping Ranges (Shader)")]
+    [SerializeField] public float clipValue = 0.1f;
+
+    [Range(0, .9f)] public float ClipX = 0.0f;
+    [Range(0, .9f)] public float ClipY = 0.0f;
+    [Range(0, .9f)] public float ClipZ = 0.0f;
+
     [SerializeField] public Texture2D TransferTexture;
 
 
@@ -49,12 +57,35 @@ public class VolumeObject : MonoBehaviour
     {
         if (Material != null)
         {
-            Material.SetFloat("_MinX", MinX);
-            Material.SetFloat("_MaxX", MaxX);
-            Material.SetFloat("_MinY", MinY);
-            Material.SetFloat("_MaxY", MaxY);
-            Material.SetFloat("_MinZ", MinZ);
-            Material.SetFloat("_MaxZ", MaxZ);
+            if (ClipX == 0.0f)
+            {
+                Material.SetFloat("_MinX", MinX);
+                Material.SetFloat("_MaxX", MaxX);
+            } else
+            {
+                Material.SetFloat("_MinX", ClipX);
+                Material.SetFloat("_MaxX", ClipX+clipValue);
+            }
+            if (ClipY == 0.0f)
+            {
+                Material.SetFloat("_MinY", MinY);
+                Material.SetFloat("_MaxY", MaxY);
+            }
+            else
+            {
+                Material.SetFloat("_MinY", ClipY);
+                Material.SetFloat("_MaxY", ClipY +clipValue);
+            }
+            if (ClipZ == 0.0f)
+            {
+                Material.SetFloat("_MinZ", MinZ);
+                Material.SetFloat("_MaxZ", MaxZ);
+            }
+            else
+            {
+                Material.SetFloat("_MinZ", ClipZ);
+                Material.SetFloat("_MaxZ", ClipZ + clipValue);
+            }
 
             Material.SetFloat("_DataMin", DataMin);
             Material.SetFloat("_DataMax", DataMax);

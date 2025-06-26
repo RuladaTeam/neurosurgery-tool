@@ -24,7 +24,7 @@ public class CutPlaneVisual : MonoBehaviour
         _xMinPlane.transform.localPosition = new Vector3(0.5f - _volumeContainer.MinX, 0, 0);
         _xMaxPlane.transform.localPosition = new Vector3(0.5f - _volumeContainer.MaxX, 0, 0);
 
-        _zMinPlane.transform.localPosition = new Vector3(0, 0, 0.5f - _volumeContainer.MinZ);
-        _zMaxPlane.transform.localPosition = new Vector3(0, 0, 0.5f - _volumeContainer.MaxZ);
+        _zMinPlane.transform.localPosition = new Vector3(0, 0, 0.5f - _volumeContainer.MaxZ);
+        _zMaxPlane.transform.localPosition = new Vector3(0, 0, 0.5f - _volumeContainer.MinZ);
     }
 }
