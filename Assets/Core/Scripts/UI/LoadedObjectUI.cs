@@ -9,7 +9,8 @@ namespace Core.Scripts.UI
         
         protected virtual void Start()
         {
-            _defaultWorldPosition = transform.position;
+            _defaultWorldPosition =  new Vector3(transform.parent.position.x, transform.parent.position.y-0.5f, transform.parent.position.z);
+            transform.forward = transform.position - (Camera.main.transform.position);
             _defaultWorldRotation = transform.rotation;
         }
         
