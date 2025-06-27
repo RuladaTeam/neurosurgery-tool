@@ -21,6 +21,15 @@ namespace Core.Scripts.UI
         
         private static string _currentDensityMode = "sphere";
         private GameObject _loadedObject;
+        private Material _cutPlaneMaterial;
+        private Mesh _loadedMesh;
+
+        private void Awake()
+        {
+            _loadedMesh = GetComponentInParent<MeshFilter>().mesh;
+            _cutPlaneMaterial = GetComponentInParent<MeshRenderer>().material;
+            SetCutPlaneDepth(0f);
+        }
         
         protected override void Start()
         {
@@ -30,6 +39,10 @@ namespace Core.Scripts.UI
             _yDepthToggle.onValueChanged.AddListener(SetYDepthColorScheme);
             _zDepthToggle.onValueChanged.AddListener(SetZDepthColorScheme);
             _sphereToggle.onValueChanged.AddListener(SetSphereDepthColorScheme);
+            
+            _depthSlider.onValueChanged.AddListener(SetCutPlaneDepth);
+            _rotationSlider.onValueChanged.AddListener(SetCutPlaneRotation);
+
             
             ResetAllToggles();
         }
@@ -116,6 +129,18 @@ namespace Core.Scripts.UI
                     _sphereToggle.SetIsOnWithoutNotify(true);
                     break;
             }
+        }
+
+        private void SetCutPlaneDepth(float value)
+        {
+            Vector4 cutPlanePoint = _cutPlaneMaterial.GetVector("_CutPlanePoint");
+            _cutPlaneMaterial.SetVector("_CutPlanePoint", new Vector4(cutPlanePoint.x, cutPlanePoint.y, 
+                _loadedMesh.bounds.min.z + value * (_loadedMesh.bounds.max.z - _loadedMesh.bounds.min.z), 1));
+        }
+
+        private void SetCutPlaneRotation(float value)
+        {
+            
         }
     }
 }

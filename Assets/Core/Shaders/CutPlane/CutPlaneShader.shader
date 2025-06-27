@@ -59,7 +59,6 @@ Shader "Custom/CutPlaneWithVertexColor"
 
             fixed4 frag(v2f i) : SV_Target
             {
-                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
 
                 // Signed distance to the cut plane in LOCAL SPACE
                 float3 planeNormal = normalize(_CutPlaneNormal.xyz);
