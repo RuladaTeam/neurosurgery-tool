@@ -353,7 +353,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
@@ -388,9 +388,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FilePath: Assets/volume_data_hu.raw
-  Width: 128
-  Height: 64
-  Depth: 128
+  Width: 256
+  Height: 128
+  Depth: 256
   _container: {fileID: 639207373}
 --- !u!4 &64504729
 Transform:
@@ -1977,12 +1977,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 639207370}
-  - component: {fileID: 639207373}
   - component: {fileID: 639207368}
   - component: {fileID: 639207367}
   - component: {fileID: 639207366}
   - component: {fileID: 639207372}
   - component: {fileID: 639207371}
+  - component: {fileID: 639207373}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -2243,7 +2243,7 @@ MonoBehaviour:
   DataMin: 0
   DataMax: 8920
   HuValue: 8920
-  YOffset: 0.58
+  YOffset: -1
   MinX: 0
   MaxX: 1
   MinY: 0

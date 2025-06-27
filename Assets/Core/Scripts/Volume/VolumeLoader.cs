@@ -49,7 +49,7 @@ namespace Core.Scripts.Volume
             }
 
             // Create Texture3D
-            _container.Texture = new Texture3D(Width, Height, Depth, TextureFormat.RFloat, false);
+            _container.Texture = new Texture3D(Width, Height, Depth, TextureFormat.RGBAFloat, false);
             Color[] pixels = new Color[Width * Height * Depth];
 
             for (int i = 0; i < pixels.Length; i++)

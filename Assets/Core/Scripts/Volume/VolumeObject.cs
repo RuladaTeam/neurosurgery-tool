@@ -96,56 +96,63 @@ public class VolumeObject : MonoBehaviour
             UpdateTransferFunction();
         }
     }
-
     public void UpdateTransferFunction()
     {
+        if (TransferTexture == null)
+            return;
+
+        float minValue = DataMin;
+        float maxValue = DataMax;
+
         for (int x = 0; x < TransferTexture.width; x++)
         {
-            float huValue = HuValue;
+            float t = x / (float)(TransferTexture.width - 1);
+            float huValue = Mathf.Lerp(minValue, maxValue, t);
 
             Color color;
 
-            // Air
+            // Air (-1000 to -500)
             if (huValue < -500)
             {
-                color = new Color(0, 0, 0, 0);
+                color = new Color(0, 0, 0, 0); // Transparent
             }
-            // Soft Tissue
-            else if (huValue >= 400 && huValue <= 1500)
+            // Soft Tissue (-500 to 400)
+            else if (huValue <= 400)
+            {
+                float gray = Mathf.InverseLerp(-500, 400, huValue);
+                gray = Mathf.Pow(gray, 1.2f); // Slightly boost mid-range contrast
+
+                // Warm tone for soft tissue
+                color = new Color(gray * 0.7f, gray * 0.6f, gray * 0.8f, gray * 0.3f);
+            }
+            // Muscle/Fat Highlight (400 to 1500)
+            else if (huValue <= 1500)
             {
                 float alpha = Mathf.InverseLerp(400, 1500, huValue);
-                color = new Color(0.8f, 0.5f, 0.3f, alpha * 0.3f);
+                alpha = Mathf.Clamp01(alpha * 0.8f); // Increase max opacity
+
+                // Orange-red for muscle/fat
+                color = new Color(1.0f, 0.7f, 0.5f, alpha);
             }
-            // Bone
-            else if (huValue > 1500)
-            {
-                float alpha = Mathf.InverseLerp(1500, DataMax, huValue);
-                color = new Color(1, 1, 1, Mathf.Min(alpha * 2, 1));
-            }
-            // Default tissue
+            // Bone (1500 to 4000)
             else
             {
-                float gray = Mathf.InverseLerp(DataMin, DataMax, huValue);
-                color = new Color(gray, gray, gray, gray * 0.2f);
+                float alpha = Mathf.InverseLerp(1500, 4000, huValue);
+                alpha = Mathf.Min(alpha * 0.6f, 0.6f); // Reduce max opacity to avoid burnout
+
+                // Desaturated white-gray for bone
+                color = new Color(0.9f, 0.9f, 0.9f, alpha);
             }
-
-            // Inside the loop in UpdateTransferFunction()
-            float dist = Mathf.Abs(huValue - HuValue);
-            float weight = 1.0f - Mathf.InverseLerp(0, 200, dist); // blend over 200 HU range
-
-            color.a = weight * 0.8f; // boost opacity near target
 
             TransferTexture.SetPixel(x, 0, color);
         }
 
         TransferTexture.Apply();
 
-        // Optional: update material immediately
-        if (Renderer && Renderer.material)
+        if (Renderer != null && Renderer.material != null)
         {
             Renderer.material.SetTexture("_Transfer", TransferTexture);
         }
-
     }
 
 }

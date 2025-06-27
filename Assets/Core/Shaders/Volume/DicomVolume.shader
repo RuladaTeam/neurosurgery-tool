@@ -11,6 +11,7 @@ Properties
     _DataMin("Data min", Range(-1000, 8920)) = 0
     _DataMax("Data max", Range(-1000, 8920)) = 8920
     _yOffset("Y Offset", Range(-1, 1)) = 0.58
+    _VolumeSpacing("Volume Spacing", Vector) = (1,2,1)
 
     [Header(Ranges)]
     _MinX("MinX", Range(0, 1)) = 0.0
@@ -44,6 +45,8 @@ float _Intensity;
 float _MinX, _MaxX, _MinY, _MaxY, _MinZ, _MaxZ;
 float _DataMin, _DataMax;
 float _yOffset;
+
+float3 _VolumeSpacing;
 
 struct Ray
 {
@@ -95,23 +98,35 @@ v2f vert(appdata v)
 
 float4 frag(v2f i) : SV_Target
 {
-    float3 worldDir = i.worldPos - _WorldSpaceCameraPos;
-    float3 localDir = normalize(mul(unity_WorldToObject, worldDir));
+     float3 worldDir = i.worldPos - _WorldSpaceCameraPos;
+    float3 localDir = normalize(mul(unity_WorldToObject, float4(worldDir, 0)).xyz);
 
     Ray ray;
     ray.from = i.localPos;
     ray.dir = localDir;
     intersection(ray);
 
-    int n = 300;
-    float3 localStep = localDir * ray.tmax / n;
-    float3 localPos = i.localPos;
+    // Normalize the spacing to ensure consistent traversal density
+    float3 invSpacing = 1.0 / _VolumeSpacing;
+    float3 adjustedDir = localDir * invSpacing;
+    float dirLength = length(adjustedDir);
+    adjustedDir /= dirLength;
+
+    int n = 100;
+    float stepSize = ray.tmax / n;
+
+    float3 localStep = adjustedDir * stepSize;
+    float3 localPos = ray.from + 0.5;
+
     float4 output = 0;
 
     [unroll(n)]
     for (int i = 0; i < n; ++i)
     {
-        float volume = sampleVolume(localPos + 0.5);
+        // Clamp position based on bounding box
+        if (any(localPos < 0.0) || any(localPos > 1.0)) break;
+
+        float volume = sampleVolume(localPos);
         float4 color = transferFunction(volume) * volume * _Intensity;
         output += (1.0 - output.a) * color;
         localPos += localStep;
