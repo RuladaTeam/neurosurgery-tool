@@ -281,7 +281,7 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
-  m_AttachTransform: {fileID: 0}
+  m_AttachTransform: {fileID: 1188769203}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 0
   m_MatchAttachPosition: 1
@@ -354,7 +354,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -374,7 +374,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &64504728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -388,9 +388,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FilePath: Assets/volume_data_hu.raw
-  Width: 256
-  Height: 128
-  Depth: 256
+  Width: 128
+  Height: 64
+  Depth: 128
   _container: {fileID: 639207373}
 --- !u!4 &64504729
 Transform:
@@ -1279,6 +1279,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 714084736329386870, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+      propertyPath: m_PhysicsLayerMask.m_Bits
+      value: 65
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946525662316353459, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+      propertyPath: m_RaycastMask.m_Bits
+      value: 2147483809
+      objectReference: {fileID: 0}
+    - target: {fileID: 2372143315582369830, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+      propertyPath: m_RaycastMask.m_Bits
+      value: 2147483809
+      objectReference: {fileID: 0}
     - target: {fileID: 2773834725789788132, guid: b954e066461684c4aaf82190685e9a06, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1323,6 +1335,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Origin FARSH
       objectReference: {fileID: 0}
+    - target: {fileID: 3577162164600866194, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+      propertyPath: m_PhysicsLayerMask.m_Bits
+      value: 65
+      objectReference: {fileID: 0}
     - target: {fileID: 3578608457827991229, guid: b954e066461684c4aaf82190685e9a06, type: 3}
       propertyPath: m_ClearFlags
       value: 2
@@ -1343,6 +1359,10 @@ PrefabInstance:
       propertyPath: m_BackGroundColor.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4782718620711962568, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+      propertyPath: m_RaycastMask.m_Bits
+      value: 2147483809
+      objectReference: {fileID: 0}
     - target: {fileID: 5508118935847537427, guid: b954e066461684c4aaf82190685e9a06, type: 3}
       propertyPath: m_Target
       value: 
@@ -1351,9 +1371,21 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5985434472851735164, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+      propertyPath: m_PhysicsLayerMask.m_Bits
+      value: 65
+      objectReference: {fileID: 0}
+    - target: {fileID: 7563920854164313577, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+      propertyPath: m_PhysicsLayerMask.m_Bits
+      value: 65
+      objectReference: {fileID: 0}
     - target: {fileID: 8507841871977564993, guid: b954e066461684c4aaf82190685e9a06, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8796642224329673004, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+      propertyPath: m_RaycastMask.m_Bits
+      value: 2147483809
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -1373,6 +1405,18 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3578608457827991227, guid: b954e066461684c4aaf82190685e9a06, type: 3}
       insertIndex: -1
       addedObject: {fileID: 450961409}
+    - targetCorrespondingSourceObject: {fileID: 3013381299580073144, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 526855298}
+    - targetCorrespondingSourceObject: {fileID: 5242524124438686247, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 731090536}
+    - targetCorrespondingSourceObject: {fileID: 1269447826295224924, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1187369584}
+    - targetCorrespondingSourceObject: {fileID: 8298400095804849586, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1187369583}
   m_SourcePrefab: {fileID: 100100000, guid: b954e066461684c4aaf82190685e9a06, type: 3}
 --- !u!1 &450961405 stripped
 GameObject:
@@ -1729,6 +1773,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &526855297 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3013381299580073144, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+  m_PrefabInstance: {fileID: 450961404}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &526855298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 526855297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7edc7b439126a9246940f64f8cf2f8cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxRayCastDistance: 10
 --- !u!1 &545161011
 GameObject:
   m_ObjectHideFlags: 0
@@ -1977,19 +2039,19 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 639207370}
+  - component: {fileID: 639207373}
   - component: {fileID: 639207368}
   - component: {fileID: 639207367}
   - component: {fileID: 639207366}
   - component: {fileID: 639207372}
   - component: {fileID: 639207371}
-  - component: {fileID: 639207373}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &639207366
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2243,7 +2305,7 @@ MonoBehaviour:
   DataMin: 0
   DataMax: 8920
   HuValue: 8920
-  YOffset: -1
+  YOffset: 0.58
   MinX: 0
   MaxX: 1
   MinY: 0
@@ -2508,6 +2570,24 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 731014302}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &731090535 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5242524124438686247, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+  m_PrefabInstance: {fileID: 450961404}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &731090536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731090535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7edc7b439126a9246940f64f8cf2f8cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxRayCastDistance: 10
 --- !u!1 &821401214
 GameObject:
   m_ObjectHideFlags: 0
@@ -2716,6 +2796,42 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1033676504}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1187369581 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8298400095804849586, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+  m_PrefabInstance: {fileID: 450961404}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1187369582 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1269447826295224924, guid: b954e066461684c4aaf82190685e9a06, type: 3}
+  m_PrefabInstance: {fileID: 450961404}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1187369583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1187369581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7edc7b439126a9246940f64f8cf2f8cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxRayCastDistance: 10
+--- !u!114 &1187369584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1187369582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7edc7b439126a9246940f64f8cf2f8cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxRayCastDistance: 10
 --- !u!1 &1188769199
 GameObject:
   m_ObjectHideFlags: 0
