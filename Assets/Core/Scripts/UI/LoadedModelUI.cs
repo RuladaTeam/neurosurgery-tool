@@ -140,7 +140,9 @@ namespace Core.Scripts.UI
 
         private void SetCutPlaneRotation(float value)
         {
-            
+            Vector4 cutPlaneNormal = _cutPlaneMaterial.GetVector("_CutPlaneNormal");
+            _cutPlaneMaterial.SetVector("_CutPlaneNormal", new Vector4(cutPlaneNormal.x,
+                value * 360, cutPlaneNormal.z, 0));
         }
     }
 }

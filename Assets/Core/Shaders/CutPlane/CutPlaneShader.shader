@@ -10,7 +10,7 @@ Shader "Custom/CutPlaneWithVertexColor"
 
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Transparent" }
         LOD 200
 
         Pass
@@ -146,8 +146,8 @@ Shader "Custom/CutPlaneWithVertexColor"
                 float3 diffuseTerm = ndotl * _LightColor0.rgb;
 
                 // Combine base color + vertex color + lighting
-                fixed4 finalColor = _BaseColor * i.vertexColor;
-                finalColor.rgb *= diffuseTerm;
+                fixed4 finalColor = _BaseColor * i.vertexColor ;
+                finalColor.rgb *= diffuseTerm ;
 
                 return finalColor;
             }

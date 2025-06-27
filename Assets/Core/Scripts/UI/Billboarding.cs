@@ -1,28 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Billboarding : MonoBehaviour
+namespace Core.Scripts.UI
 {
-    private Transform _mainCamera;
-
-    private bool _isBeingHolded;
-
-    private void Start()
+    public class Billboarding : MonoBehaviour
     {
-        _mainCamera = Camera.main.transform;
-    }
+        private Transform _mainCamera;
 
-    private void Update()
-    {
-        if (_mainCamera != null && _isBeingHolded)
+        private bool _isBeingHolded;
+
+        private void Start()
         {
-            transform.forward = (transform.position - _mainCamera.transform.position);
+            _mainCamera = Camera.main.transform;
         }
-    }
 
-    public void SwitchHolded()
-    {
-        _isBeingHolded = !_isBeingHolded;
+        private void Update()
+        {
+            if (_mainCamera != null && _isBeingHolded)
+            {
+                transform.forward = (transform.position - _mainCamera.transform.position);
+            }
+        }
+
+        public void SwitchHolded()
+        {
+            _isBeingHolded = !_isBeingHolded;
+        }
     }
 }

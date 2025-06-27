@@ -27,6 +27,7 @@ namespace Core.Scripts
                 }
                 
                 LoadedObject loadedObject = hit.transform.gameObject.GetComponent<LoadedObject>();
+                if (!loadedObject.ShowUIOnHover) return;
                 if (loadedObject.IsHovered) return;
                 
                 _selectedObject = loadedObject;
