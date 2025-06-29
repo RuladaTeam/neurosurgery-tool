@@ -1,4 +1,4 @@
-Shader "VolumeRendering/FoDicom"
+Shader "VolumeRendering/DicomVolume"
 {
 
 Properties

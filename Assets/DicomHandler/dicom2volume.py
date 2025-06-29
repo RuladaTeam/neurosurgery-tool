@@ -1,338 +1,114 @@
 import os
-import numpy as np
+from pathlib import Path
 import pydicom
-import vtk
-from vtk.util import numpy_support
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QSlider, QLabel
-from PyQt5.QtCore import Qt
-from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
-from scipy.ndimage import zoom
+from pydicom.pixels import pixel_array
+import matplotlib.pyplot as plt
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.widgets import Slider
+from scipy.ndimage import map_coordinates
 
+dicom_dir = r"C:\Users\kb4mi\Desktop\RULADA\Coloring\DCM_DATASETS\BRAIN_MRI\dotaev"
 
+#================================DICOM READING======================
 
-def load_dicom_series(directory, target_description="+C Sag T1 FSPGR 3D"):
-    """Load DICOM slices from the specified series only."""
-    print(f"Searching for series: '{target_description}'")
-    slices = []
-
-    for filename in os.listdir(directory):
-        filepath = os.path.join(directory, filename)
-
-        # Skip directories
-        if os.path.isdir(filepath):
-            continue
-
+#Go through each file in the folder, load each dataset
+dicom_datasets = []
+for root, _, filenames in os.walk(dicom_dir):
+    for filename in filenames:
+        file_path = Path(root, filename)
         try:
-            ds = pydicom.dcmread(filepath, stop_before_pixels=False)
-        except Exception:
-            continue
-
-        if not hasattr(ds, "SeriesDescription") or ds.SeriesDescription != target_description:
-            continue
-
-        slices.append(ds)
-
-    if not slices:
-        raise ValueError(f"No DICOM slices found matching series description: '{target_description}'")
-
-    # Sort slices by Z position
-    try:
-        slices.sort(key=lambda x: float(x.ImagePositionPatient[2]))
-    except Exception as e:
-        raise ValueError("Slices missing or invalid ImagePositionPatient tag.") from e
-
-    first_shape = slices[0].pixel_array.shape
-
-    valid_slices = [s for s in slices if s.pixel_array.shape == first_shape]
-    valid_slices = slices
-
-    print(f"Loaded {len(valid_slices)} consistent slices.")
-    image_data = np.stack([s.pixel_array for s in valid_slices]).astype(np.int16)
-
-    
-    if hasattr(valid_slices[0], 'RescaleIntercept') and hasattr(valid_slices[0], 'RescaleSlope'):
-        intercept = valid_slices[0].RescaleIntercept
-        slope = valid_slices[0].RescaleSlope
-        image_data = (slope * image_data + intercept).astype(np.int16)
-        
-    z_positions = np.array([float(s.ImagePositionPatient[2]) for s in valid_slices])
-    diff = np.diff(z_positions)
-
-    # Find where direction changes (from increasing to decreasing or vice versa)
-    direction_changes = np.where(np.diff(np.sign(diff)) != 0)[0] + 1
-
-    if len(direction_changes) > 0:
-        print(f"Direction change detected at slice index: {direction_changes[0]}")
-        image_data = image_data[:direction_changes[0]]  # Keep only the first continuous segment
-        print(f"Trimmed volume to {image_data.shape[0]} slices")
-    else:
-        print("No direction change detected – volume appears continuous.")
-
-    print(f"Final volume shape: {image_data.shape}")
-    return image_data
-
-
-
-class VolumeViewer(QMainWindow):
-    def __init__(self, image_data):
-        super().__init__()
-        self.image_data = image_data
-        self.volume = None
-        self.renderer = None
-
-        # Initialize transfer functions and property
-        self.color_tf = vtk.vtkColorTransferFunction()
-        self.opacity_tf = vtk.vtkPiecewiseFunction()
-        self.volume_property = vtk.vtkVolumeProperty()
-
-        self.init_ui()
-        self.create_volume()
-
-    def init_ui(self):
-        central_widget = QWidget()
-        layout = QVBoxLayout()
-
-        # VTK Render Window
-        self.vtk_widget = QVTKRenderWindowInteractor()
-        layout.addWidget(self.vtk_widget)
-
-        # Sliders
-        slider_layout = QHBoxLayout()
-
-        self.lower_slider = QSlider(Qt.Horizontal)
-        self.upper_slider = QSlider(Qt.Horizontal)
-        self.lower_slider.setRange(-1000, 4000)
-        self.upper_slider.setRange(-1000, 4000)
-        self.lower_slider.setValue(-1000)
-        self.upper_slider.setValue(4000)
-
-        self.lower_label = QLabel("-1000")
-        self.upper_label = QLabel("4000")
-
-        slider_layout.addWidget(QLabel("Lower HU:"))
-        slider_layout.addWidget(self.lower_label)
-        slider_layout.addWidget(self.lower_slider)
-        slider_layout.addWidget(QLabel("Upper HU:"))
-        slider_layout.addWidget(self.upper_label)
-        slider_layout.addWidget(self.upper_slider)
-
-        layout.addLayout(slider_layout)
-
-        # Connect sliders
-        self.lower_slider.valueChanged.connect(self.update_threshold)
-        self.upper_slider.valueChanged.connect(self.update_threshold)
-
-        central_widget.setLayout(layout)
-        self.setCentralWidget(central_widget)
-        self.setWindowTitle("DICOM Volume Viewer with HU Control")
-        self.resize(800, 600)
-
-    def create_volume(self):
-        flat_data = self.image_data.ravel()
-        vtk_data = numpy_support.numpy_to_vtk(
-            num_array=flat_data,
-            deep=True,
-            array_type=vtk.VTK_SHORT
-        )
-
-        # Создание vtkImageData
-        imageData = vtk.vtkImageData()
-        dimensions = self.image_data.shape[1], self.image_data.shape[2], self.image_data.shape[0]
-        imageData.SetDimensions(dimensions)
-
-        self.dimensions = dimensions
-        
-        # Установка оригинальной точки (ImagePositionPatient из первого среза)
-        first_slice = pydicom.dcmread(os.path.join(dicom_directory, os.listdir(dicom_directory)[0]))
-        origin = first_slice.ImagePositionPatient
-        imageData.SetOrigin(origin)
-
-        self.origin = origin
-
-        # Установка шагов между точками (PixelSpacing и SliceThickness)
-        pixel_spacing = first_slice.PixelSpacing
-        slice_thickness = first_slice.SliceThickness
-        spacing = [pixel_spacing[0], pixel_spacing[1], slice_thickness/2]
-        imageData.SetSpacing(spacing)
-
-        self.spacing = spacing
-        
-        # Установка скалярных данных
-        imageData.GetPointData().SetScalars(vtk_data)
-
-        # Остальной код для рендеринга...
-        self.renderer = vtk.vtkRenderer()
-        self.vtk_widget.GetRenderWindow().AddRenderer(self.renderer)
-        interactor = self.vtk_widget.GetRenderWindow().GetInteractor()
-    
-        # Transfer functions и VolumeProperty...
-        # ...
-
-        # Transfer functions
-        self.color_tf = vtk.vtkColorTransferFunction()
-        self.opacity_tf = vtk.vtkPiecewiseFunction()
-
-        self._update_transfer_functions(-1000, 4000)
-
-        # Volume property
-        self.volume_property = vtk.vtkVolumeProperty()
-        self.volume_property.SetColor(self.color_tf)
-        self.volume_property.SetScalarOpacity(self.opacity_tf)
-        self.volume_property.ShadeOn()
-        self.volume_property.SetInterpolationTypeToLinear()
-
-        # Mapper
-        mapper = vtk.vtkSmartVolumeMapper()
-        mapper.SetInputData(imageData)
-
-        # Volume
-        self.volume = vtk.vtkVolume()
-        self.volume.SetMapper(mapper)
-        self.volume.SetProperty(self.volume_property)
-
-        # Add volume
-        self.renderer.AddVolume(self.volume)
-        self.renderer.SetBackground(0.1, 0.1, 0.2)
-        self.renderer.ResetCamera()
-
-        # Cut plane
-        # plane_widget = vtk.vtkImagePlaneWidget()
-        # plane_widget.SetInteractor(interactor)
-        # plane_widget.SetInputData(imageData)
-        # plane_widget.DisplayTextOn()
-        # plane_widget.PlaceWidget()
-        # plane_widget.On()
-
-        interactor.Initialize()
-        self.vtk_widget.GetRenderWindow().Render()
-
-    def _update_transfer_functions(self, lower, upper):
-        if self.color_tf is None or self.opacity_tf is None:
-            print("Transfer functions not initialized!")
-            return
-
-        self.color_tf.RemoveAllPoints()
-        self.opacity_tf.RemoveAllPoints()
-
-        self.color_tf.AddRGBPoint(lower, 0, 0, 0)
-        self.color_tf.AddRGBPoint((lower + upper) / 2, 0.5, 0.5, 0.5)
-        self.color_tf.AddRGBPoint(upper, 1.0, 1.0, 1.0)
-
-        self.opacity_tf.AddPoint(lower, 0.0)
-        self.opacity_tf.AddPoint(upper, 1.0)
-
-        self.volume_property.SetColor(self.color_tf)
-        self.volume_property.SetScalarOpacity(self.opacity_tf)
-        self.volume_property.Modified()
-
-    def update_threshold(self):
-        lower = self.lower_slider.value()
-        upper = self.upper_slider.value()
-        if lower > upper:
-            self.lower_slider.setValue(upper)
-            lower = upper
-        elif upper < lower:
-            self.upper_slider.setValue(lower)
-            upper = lower
-
-        self.lower_label.setText(str(lower))
-        self.upper_label.setText(str(upper))
-
-        self._update_transfer_functions(lower, upper)
-        self.vtk_widget.GetRenderWindow().Render()
-
-
-
-if __name__ == "__main__":
-    dicom_directory = r"A/A"
-
-    if not os.path.isdir(dicom_directory):
-        raise FileNotFoundError(f"DICOM directory not found: {dicom_directory}")
-
-    try:
-        volume_data = load_dicom_series(dicom_directory, target_description="+C Cor T1 FSPGR 3D")
-
-        app = QApplication([])
-        print("Creating VolumeViewer...")
-        viewer = VolumeViewer(volume_data)
-        print("Showing viewer...")
-
-        volume = viewer.volume
-        mapper = volume.GetMapper()
-        imageData = mapper.GetInput()  # This is vtkImageData
-
-        imageData.SetDimensions(viewer.dimensions)
-        imageData.SetOrigin(viewer.origin)
-        imageData.SetSpacing(viewer.spacing)
-
-        
-        flat_data = volume_data.ravel()
-        vtk_data = numpy_support.numpy_to_vtk(
-            num_array=flat_data,
-            deep=True,
-            array_type=vtk.VTK_SHORT
-        )
-
-        
-        # Установка скалярных данных
-        imageData.GetPointData().SetScalars(vtk_data)
-
-        dimensions = imageData.GetDimensions()
-        scalar_type = imageData.GetScalarType()
-
-        point_data = imageData.GetPointData().GetScalars()
-        array = numpy_support.vtk_to_numpy(point_data)
-        
-
-        # Reshape according to dimensions (x, y, z) -> (z, y, x)
-        array = array.reshape(dimensions[2], dimensions[1], dimensions[0])
-        
-
-        data_min = -1000
-        data_max = 4000
-        array = np.clip(array, data_min, data_max)
-        array = (array - data_min) / (data_max - data_min + 1e-6)  # avoid div by zero
-
-        #array = array.astype(np.float32)
-        
-        target_shape = (64, 128, 128) 
-
-        # Calculate zoom factors for each dimension
-        zoom_factors = [
-            target_shape[0] / array.shape[0],
-            target_shape[1] / array.shape[1],
-            target_shape[2] / array.shape[2]
-        ]
-
-        # Downscale using cubic interpolation (order=3)
-        array_downscaled = zoom(array, zoom_factors, order=1)  # order=1 is linear interpolation
-
-        # Optional: Cast back to int16 if needed
-        array_downscaled = np.clip(array_downscaled, np.iinfo(np.int16).min, np.iinfo(np.int16).max)
-        array = array_downscaled.astype(np.int16)
-        
-        
-        array.tofile("volume_data.raw")
-        
-        raw_array = numpy_support.vtk_to_numpy(point_data)
-        raw_array = raw_array.reshape(dimensions[2], dimensions[1], dimensions[0])
-        raw_array.astype(np.int16).tofile("volume_data_hu.raw")
-
-        print(f"Raw array shape: {raw_array.shape} Dimensions: {dimensions}")
-
-
-        
-        with open("volume_metadata_hu.txt", "w") as f:
-            f.write(f"Raw Min: {raw_array.min()}\n")
-            f.write(f"Raw Max: {raw_array.max()}\n")
-            f.write(f"Shape: {raw_array.shape}\n")
-            f.write(f"Dtype: {raw_array.dtype}\n")
-                
-
-        
-        viewer.show()
-        print("App exec_ starting...")
-        app.exec_()
-    except Exception as e:
-        print(f"[ERROR] {e}")
+            dataset = pydicom.dcmread(file_path, force=True)
+            dicom_datasets.append(dataset)
+        except Exception as e:
+            print(f"[ERROR] Error reading {file_path}: {e}")
+
+if not dicom_datasets:
+    raise ValueError("No valid DICOM files found")
+
+#Go through all the datasets and extract pixel_data
+slices = []
+for ds in dicom_datasets:
+    if 'PixelData' in ds:
+        pixel_array = ds.pixel_array.astype(np.float32)
+        slices.append(pixel_array)
+
+if not slices:
+    raise ValueError('No pixel data found in the dicom series')
+
+#Stack all slices in a volume
+volume = np.stack(slices, axis=0)
+
+#Normilize to grayscale
+
+if volume.shape[-1] == 3:
+    volume = np.mean(volume, axis=-1)
+
+
+#================== Slice Viewer===================
+class VolumeViewer:
+    def __init__(self, volume):
+        self.volume = volume
+        self.slice_idx = volume.shape[0] // 2  # Start at middle slice
+
+        fig, ax = plt.subplots()
+        plt.subplots_adjust(bottom=0.25)
+
+        self.ax = ax
+        self.fig = fig
+
+        self.shown_volume = self.volume
+
+        # Show initial slice
+        self.im = self.ax.imshow(self.shown_volume[self.slice_idx], cmap='gray')
+
+        # Slider axis
+        ax_slider = plt.axes([0.25, 0.1, 0.65, 0.03])
+        self.slider = Slider(ax_slider, 'Slice', 0, self.volume.shape[0]-1,
+                             valinit=self.slice_idx, valstep=1)
+
+        # Connect event
+        self.slider.on_changed(self.update_slice)
+        self.fig.canvas.mpl_connect('key_press_event', self.on_key)
+
+    def update_slice(self, val):
+        self.slice_idx = int(self.slider.val)
+        self.im.set_data(self.shown_volume[self.slice_idx])
+        self.fig.canvas.draw_idle()
+
+    def on_key(self, event):
+        if event.key == 'right':
+            self.slider.set_val(min(self.slice_idx + 1, self.volume.shape[0] - 1))
+        elif event.key == 'left':
+            self.slider.set_val(max(self.slice_idx - 1, 0))
+
+# Normalize and run viewer
+viewer = VolumeViewer(volume.transpose((0,1,2))) # Change numbers to transpose to axial, sagittal or frontal view
+
+
+plt.show(block=False)
+
+# ======================== 3D Rendering ===================
+import pyvista as pv
+
+data_array = volume[:104]
+
+grid = pv.ImageData(dimensions=np.array(data_array.shape))
+grid.point_data["Intensity"] = data_array.flatten(order="F")
+
+grid.spacing = (1.0, 1.0, 1.0)
+grid.origin = (0.0, 0.0, 0.0)
+
+grid.plot(volume=True, cmap="gray")
+
+print(f"Saving file with dimensions {volume.shape}")
+volume = volume.astype(np.uint8)
+unique, counts = np.unique(volume, return_counts=True)
+print(dict(zip(unique, counts)))
+
+volume = np.transpose(volume, (2, 1, 0))
+
+volume.flatten(order='F')
+
+volume.tofile("volume.raw")
 

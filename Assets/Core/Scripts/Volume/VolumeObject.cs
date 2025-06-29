@@ -107,44 +107,7 @@ namespace Core.Scripts.Volume
             for (int x = 0; x < TransferTexture.width; x++)
             {
                 float t = x / (float)(TransferTexture.width - 1);
-                float huValue = Mathf.Lerp(minValue, maxValue, t);
-
-                Color color;
-
-                // Air (-1000 to -500)
-                if (huValue < -500)
-                {
-                    color = new Color(0, 0, 0, 0); // Transparent
-                }
-                // Soft Tissue (-500 to 400)
-                else if (huValue <= 400)
-                {
-                    float gray = Mathf.InverseLerp(-500, 400, huValue);
-                    gray = Mathf.Pow(gray, 1.2f); // Slightly boost mid-range contrast
-
-                    // Warm tone for soft tissue
-                    color = new Color(gray * 0.7f, gray * 0.6f, gray * 0.8f, gray * 0.3f);
-                }
-                // Muscle/Fat Highlight (400 to 1500)
-                else if (huValue <= 1500)
-                {
-                    float alpha = Mathf.InverseLerp(400, 1500, huValue);
-                    alpha = Mathf.Clamp01(alpha * 0.8f); // Increase max opacity
-
-                    // Orange-red for muscle/fat
-                    color = new Color(1.0f, 0.7f, 0.5f, alpha);
-                }
-                // Bone (1500 to 4000)
-                else
-                {
-                    float alpha = Mathf.InverseLerp(1500, 4000, huValue);
-                    alpha = Mathf.Min(alpha * 0.6f, 0.6f); // Reduce max opacity to avoid burnout
-
-                    // Desaturated white-gray for bone
-                    color = new Color(0.9f, 0.9f, 0.9f, alpha);
-                }
-
-                TransferTexture.SetPixel(x, 0, color);
+                TransferTexture.SetPixel(x, 0, new Color(0,0,0));
             }
 
             TransferTexture.Apply();

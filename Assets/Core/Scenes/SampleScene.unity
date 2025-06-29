@@ -387,10 +387,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b87c9522d687f44b999195f6924a27b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FilePath: Assets/volume_data_hu.raw
-  Width: 128
-  Height: 64
-  Depth: 128
+  FilePath: Assets/volume.raw
   _container: {fileID: 639207373}
 --- !u!4 &64504729
 Transform:
@@ -1881,6 +1878,7 @@ GameObject:
   - component: {fileID: 639207366}
   - component: {fileID: 639207372}
   - component: {fileID: 639207371}
+  - component: {fileID: 639207374}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -2131,7 +2129,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 639207365}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c297cd326c39504da45cd27251a96e0, type: 3}
   m_Name: 
@@ -2158,6 +2156,20 @@ MonoBehaviour:
   Material: {fileID: 2100000, guid: fdb4dc9f2cce0704096cdefe124c6b11, type: 2}
   Renderer: {fileID: 639207367}
   Texture: {fileID: 0}
+--- !u!114 &639207374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 639207365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b87c9522d687f44b999195f6924a27b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FilePath: Assets/volume.raw
+  _container: {fileID: 0}
 --- !u!1 &666219603 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1763277165867629938, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
