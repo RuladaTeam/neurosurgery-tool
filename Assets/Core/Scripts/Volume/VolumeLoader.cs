@@ -12,7 +12,7 @@ namespace Core.Scripts.Volume
         [SerializeField] private GameObject _loadedVolumeObjectPrefab;
         [SerializeField] private GameObject _loadedVolumeUIPrefab;
         [Header("Initial values")]
-        [SerializeField] private int _iterations = 2048;
+        [SerializeField] private int _iterations = 256;
         [SerializeField] private float _dataMin = 0;
         [SerializeField] private float _dataMax = 1;
         [SerializeField] private float _sliceAxis1Min = 0;
