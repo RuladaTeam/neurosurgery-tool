@@ -44,10 +44,13 @@
                 float3 tMin = min(tBot, tTop);
                 float3 tMax = max(tBot, tTop);
 
-                float largest_tMin = max(max(tMin.x, tMin.y), tMin.z);
-                float smallest_tMax = min(min(tMax.x, tMax.y), tMax.z);
+                float2 t0 = max (tMin.xx, tMin.yz);
+                float largest_tMin = max (t0.x, t0.y);
+                t0 = min (tMax.xx, tMax.yz);
+                float smallest_tMax = min (t0.x, t0.y);
 
-                bool hit = (largest_tMin <= smallest_tMax);
+
+                bool hit = (largest_tMin <= smallest_tMax) ;
                 tNear = largest_tMin;
                 tFar = smallest_tMax;
 
@@ -56,6 +59,7 @@
 
             struct vert_input {
                 float4 pos : POSITION;
+                float3 worldPos : TEXCOORD0;
             };
 
             struct frag_input {
@@ -67,26 +71,12 @@
             frag_input vert(vert_input i) {
                    frag_input o;
 
-                    // Get world-space camera info
-                    float3 camPosWS = _WorldSpaceCameraPos;
-                    float4x4 objToWorld = unity_ObjectToWorld;
-                    float4x4 worldToObj = unity_WorldToObject;
-
-                    // World space vertex position
-                    float3 vertexWS = mul(objToWorld, i.pos).xyz;
-
-                    // Ray direction in world space
-                    float3 rayDirWS = normalize(vertexWS - camPosWS);
-
-                    // Convert to object space
-                    float3 rayOriginOS = mul(worldToObj, float4(camPosWS, 1)).xyz;
-                    float3 rayDirOS = mul(worldToObj, float4(rayDirWS, 0)).xyz;
-
-                    o.ray_o = rayOriginOS;
-                    o.ray_d = rayDirOS;
+                    o.ray_d = -ObjSpaceViewDir(i.pos);
+                    o.ray_o = i.pos.xyz - o.ray_d;
 
                     o.pos = UnityObjectToClipPos(i.pos);
-                    return o;
+
+                    return o;   
             }
 
             float4 get_data(float3 pos) {
@@ -124,15 +114,13 @@
                 float3 pFar = i.ray_o + i.ray_d * tFar;
 
                 // Convert to [0,1] UV space relative to scaled volume
-                float3 start = (pNear - boxMin) / (_VolumeScale);
-                float3 end = (pFar - boxMin) / (_VolumeScale);
+                float3 start = (pNear - boxMin) / _VolumeScale;
+                float3 end = (pFar - boxMin) / _VolumeScale;
 
                 float3 delta = end - start;
-                float length = distance(start, end);
+                float travelLength = distance(start, end);
                 float3 direction = normalize(delta);
-
-                float3 rayStep = direction * (length / _Iterations);
-
+                float3 rayStep = direction * (travelLength / _Iterations);
                 float4 accumColor = 0;
                 float3 pos = start;
 
@@ -145,6 +133,7 @@
                     accumColor.rgb += (1 - accumColor.a) * src.a * src.rgb;
                     accumColor.a += (1 - accumColor.a) * src.a;
 
+
                     pos += rayStep;
 
                     if (any(pos < 0) || any(pos > 1))
@@ -154,10 +143,9 @@
                 if (accumColor.a < 0.01)
                     discard;
 
-                return accumColor * _Normalisation;
+                return  saturate(accumColor * _Normalisation);
             }
             ENDCG
         }
     }
-    FallBack Off
 }
