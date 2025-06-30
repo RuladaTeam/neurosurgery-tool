@@ -390,7 +390,8 @@ MonoBehaviour:
   _filePath: Assets/volume.raw
   _material: {fileID: 2100000, guid: fdb4dc9f2cce0704096cdefe124c6b11, type: 2}
   _loadedVolumeObjectPrefab: {fileID: 7819103818819000164, guid: 93cd763a45ae4cf4d986fa7c1d1c77a5, type: 3}
-  _iterations: 2048
+  _loadedVolumeUIPrefab: {fileID: 1358976875482768946, guid: ce849f9717e658243ab1a050d5d037c4, type: 3}
+  _iterations: 10
   _dataMin: 0
   _dataMax: 1
   _sliceAxis1Min: 0
@@ -2147,6 +2148,7 @@ MonoBehaviour:
   _filePath: Assets/volume.raw
   _material: {fileID: 0}
   _loadedVolumeObjectPrefab: {fileID: 0}
+  _loadedVolumeUIPrefab: {fileID: 0}
   _iterations: 2048
   _dataMin: 0
   _dataMax: 1

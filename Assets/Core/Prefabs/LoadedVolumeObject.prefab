@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1211715689205528994}
   - component: {fileID: 6292776580827476002}
   - component: {fileID: 4061870994262807910}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: yMin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,7 +115,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4750847088376885438}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Limits
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ GameObject:
   - component: {fileID: 7952261998105793564}
   - component: {fileID: 6028456800685377950}
   - component: {fileID: 3067043745332656819}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: xMax
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -259,7 +259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8041620013770359394}
   - component: {fileID: 2495177056969632424}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CutPlaneVisuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -314,7 +314,7 @@ GameObject:
   - component: {fileID: 1331084042006880525}
   - component: {fileID: 8368809791045831092}
   - component: {fileID: 1268664002440114823}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: zMin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -420,7 +420,7 @@ GameObject:
   - component: {fileID: 3038174840027494874}
   - component: {fileID: 4885571046874686133}
   - component: {fileID: 1239758158048324204}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: zMax
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -526,7 +526,7 @@ GameObject:
   - component: {fileID: 4516026203344556770}
   - component: {fileID: 4944938498761444782}
   - component: {fileID: 2380394906132592655}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: xMin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -635,7 +635,7 @@ GameObject:
   - component: {fileID: 992556136708569792}
   - component: {fileID: 4180504551828153391}
   - component: {fileID: 2757102048824732742}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: LoadedVolumeObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -905,7 +905,7 @@ GameObject:
   - component: {fileID: 2743884322242684470}
   - component: {fileID: 9152129984545762797}
   - component: {fileID: 2052767249883175199}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: yMax
   m_TagString: Untagged
   m_Icon: {fileID: 0}

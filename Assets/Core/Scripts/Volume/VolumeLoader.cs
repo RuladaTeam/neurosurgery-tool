@@ -1,4 +1,5 @@
 using System.IO;
+using Core.Scripts.UI;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
@@ -9,6 +10,7 @@ namespace Core.Scripts.Volume
         [SerializeField] private string _filePath = "Assets/volume.raw";
         [SerializeField] private Material _material;
         [SerializeField] private GameObject _loadedVolumeObjectPrefab;
+        [SerializeField] private GameObject _loadedVolumeUIPrefab;
         [Header("Initial values")]
         [SerializeField] private int _iterations = 2048;
         [SerializeField] private float _dataMin = 0;
@@ -66,6 +68,12 @@ namespace Core.Scripts.Volume
             
             loadedVolumeObject.SetMaterialValues(scale, texture, _iterations, _dataMin, _dataMax, _sliceAxis1Min, 
                 _sliceAxis1Max, _sliceAxis2Min, _sliceAxis2Max, _sliceAxis3Min, _sliceAxis3Max, _normalisation);
+            GameObject objectMenu = Instantiate(_loadedVolumeUIPrefab, loadedVolumeObject.gameObject.transform);
+            objectMenu.transform.localScale *= (1 / loadedVolumeObject.gameObject.transform.localScale.x)/5;
+            objectMenu.transform.rotation = new Quaternion(0, 0, 0, 0);
+            loadedVolumeObject.SetObjectMenu(objectMenu);
+            objectMenu.GetComponent<LoadedVolumeUI>().SetSliderValues(_sliceAxis1Min, _sliceAxis1Max, _sliceAxis2Min, 
+                _sliceAxis2Max, _sliceAxis3Min, _sliceAxis3Max);
         }
         
         private byte[] ReadFile()
