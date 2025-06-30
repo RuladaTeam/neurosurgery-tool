@@ -49,6 +49,8 @@ namespace Core.Scripts.Volume
             if (buffer == null) return;
             
             VolumeObject loadedVolumeObject = Instantiate(_loadedVolumeObjectPrefab).GetComponent<VolumeObject>();
+            loadedVolumeObject.transform.localScale /= 3;
+            loadedVolumeObject.gameObject.GetComponent<BoxCollider>().size = scale;
             
             Color[] volumeColors = new Color[buffer.Length];
             for (int i = 0; i < buffer.Length; ++i)

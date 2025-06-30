@@ -91,7 +91,7 @@ Material:
     - _GlossyReflections: 1
     - _Intensity: 1
     - _Iteration: 1
-    - _Iterations: 2048
+    - _Iterations: 10
     - _MaxX: 1
     - _MaxY: 1
     - _MaxZ: 1
