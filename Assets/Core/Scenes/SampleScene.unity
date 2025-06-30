@@ -374,7 +374,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &64504728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -387,7 +387,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b87c9522d687f44b999195f6924a27b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FilePath: Assets/volume.raw
+  _filePath: Assets/volume.raw
+  _material: {fileID: 2100000, guid: fdb4dc9f2cce0704096cdefe124c6b11, type: 2}
+  _loadedVolumeObjectPrefab: {fileID: 7819103818819000164, guid: 93cd763a45ae4cf4d986fa7c1d1c77a5, type: 3}
+  _iterations: 2048
+  _dataMin: 0
+  _dataMax: 1
+  _sliceAxis1Min: 0
+  _sliceAxis1Max: 1
+  _sliceAxis2Min: 0
+  _sliceAxis2Max: 1
+  _sliceAxis3Min: 0
+  _sliceAxis3Max: 1
+  _normalisation: 1
 --- !u!4 &64504729
 Transform:
   m_ObjectHideFlags: 0
@@ -1091,7 +1103,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &344611391
 Transform:
   m_ObjectHideFlags: 0
@@ -1871,7 +1883,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 639207370}
-  - component: {fileID: 639207373}
   - component: {fileID: 639207368}
   - component: {fileID: 639207367}
   - component: {fileID: 639207366}
@@ -1884,7 +1895,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &639207366
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2121,40 +2132,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &639207373
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 639207365}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c297cd326c39504da45cd27251a96e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _objectMenu: {fileID: 0}
-  <ShowUIOnHover>k__BackingField: 1
-  Intensity: 1
-  Iteration: 1
-  DataMin: 0
-  DataMax: 8920
-  HuValue: 8920
-  YOffset: 0.58
-  MinX: 0
-  MaxX: 1
-  MinY: 0
-  MaxY: 1
-  MinZ: 0
-  MaxZ: 1
-  clipValue: 0.1
-  ClipX: 0
-  ClipY: 0
-  ClipZ: 0
-  TransferTexture: {fileID: 0}
-  Material: {fileID: 2100000, guid: fdb4dc9f2cce0704096cdefe124c6b11, type: 2}
-  Renderer: {fileID: 639207367}
-  Texture: {fileID: 0}
 --- !u!114 &639207374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2167,7 +2144,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b87c9522d687f44b999195f6924a27b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FilePath: Assets/volume.raw
+  _filePath: Assets/volume.raw
+  _material: {fileID: 0}
+  _loadedVolumeObjectPrefab: {fileID: 0}
+  _iterations: 2048
+  _dataMin: 0
+  _dataMax: 1
+  _sliceAxis1Min: 0
+  _sliceAxis1Max: 1
+  _sliceAxis2Min: 0
+  _sliceAxis2Max: 1
+  _sliceAxis3Min: 0
+  _sliceAxis3Max: 1
+  _normalisation: 1
 --- !u!1 &666219603 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1763277165867629938, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
@@ -3583,7 +3572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74d15527493ff424b93f909df7861854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _volumeContainer: {fileID: 639207373}
+  _volumeContainer: {fileID: 0}
   _limits: {fileID: 344611390}
   _yMinPlane: {fileID: 158482985}
   _yMaxPlane: {fileID: 731014302}

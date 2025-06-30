@@ -33,14 +33,14 @@ namespace Core.Scripts.Volume
         private void Update()
         {
             if (!_showCutPlaneCube) return;
-            _yMinPlane.transform.localPosition = new Vector3(0, 0.5f - _volumeContainer.MinY, 0);
-            _yMaxPlane.transform.localPosition = new Vector3(0, 0.5f - _volumeContainer.MaxY, 0);
-
-            _xMinPlane.transform.localPosition = new Vector3(0.5f - _volumeContainer.MinX, 0, 0);
-            _xMaxPlane.transform.localPosition = new Vector3(0.5f - _volumeContainer.MaxX, 0, 0);
-
-            _zMinPlane.transform.localPosition = new Vector3(0, 0, 0.5f - _volumeContainer.MaxZ);
-            _zMaxPlane.transform.localPosition = new Vector3(0, 0, 0.5f - _volumeContainer.MinZ);
+            // _yMinPlane.transform.localPosition = new Vector3(0, 0.5f - _volumeContainer.MinY, 0);
+            // _yMaxPlane.transform.localPosition = new Vector3(0, 0.5f - _volumeContainer.MaxY, 0);
+            //
+            // _xMinPlane.transform.localPosition = new Vector3(0.5f - _volumeContainer.MinX, 0, 0);
+            // _xMaxPlane.transform.localPosition = new Vector3(0.5f - _volumeContainer.MaxX, 0, 0);
+            //
+            // _zMinPlane.transform.localPosition = new Vector3(0, 0, 0.5f - _volumeContainer.MaxZ);
+            // _zMaxPlane.transform.localPosition = new Vector3(0, 0, 0.5f - _volumeContainer.MinZ);
         }
 
         private void OnDisable()
