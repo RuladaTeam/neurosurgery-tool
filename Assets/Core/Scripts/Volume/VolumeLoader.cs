@@ -24,6 +24,7 @@ namespace Core.Scripts.Volume
         [SerializeField] private float _normalisation = 1;
 
         private readonly int[] _size = { 208, 320, 316 }; // XYZ
+        //private readonly int[] _size = { 256, 512, 512 }; // XYZ
 
         private void Start()
         {
