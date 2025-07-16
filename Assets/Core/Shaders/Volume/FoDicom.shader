@@ -132,6 +132,13 @@
 
                     accumColor.rgb += (1 - accumColor.a) * src.a * src.rgb;
                     accumColor.a += (1 - accumColor.a) * src.a;
+                    
+                    if(sample.a >.1 && sample.a < .2 && pos.y>.38 && pos.x > .28 && pos.z >.45 && pos.y < .51 && pos.x < .44 && pos.z < .6)
+                        accumColor.r=1;
+
+                    if(sample.a >.9 && sample.a < .99 && pos.y>.38 && pos.x > .28 && pos.z >.45 && pos.y < .51 && pos.x < .44 && pos.z < .6)
+                        accumColor.r=1;
+                   
 
 
                     pos += rayStep;

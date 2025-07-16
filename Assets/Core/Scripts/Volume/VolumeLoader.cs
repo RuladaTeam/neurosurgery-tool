@@ -23,8 +23,8 @@ namespace Core.Scripts.Volume
         [SerializeField] private float _sliceAxis3Max = 1;
         [SerializeField] private float _normalisation = 1;
 
-        private readonly int[] _size = { 208, 320, 316 }; // XYZ
-        //private readonly int[] _size = { 256, 512, 512 }; // XYZ
+        //private readonly int[] _size = { 208, 320, 316 }; // XYZ
+        private readonly int[] _size = { 256, 512, 512 }; // XYZ
 
         private void Start()
         {
@@ -41,7 +41,7 @@ namespace Core.Scripts.Volume
             float maxDim = Mathf.Max(x, y, z);
 
             Vector3 scale = new Vector3(
-                x / maxDim,
+                y / maxDim,
                 y / maxDim,
                 z / maxDim
             );
